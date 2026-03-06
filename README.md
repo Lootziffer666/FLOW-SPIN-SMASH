@@ -16,12 +16,15 @@ Vorgehen in diesem Repo:
 1. Änderungen lokal committen.
 2. Einen **neuen Branch** erstellen.
 3. Daraus eine **neue PR** erzeugen.
+4. Nach erfolgreichem Commit/PR den vorherigen lokalen Arbeitsbranch löschen.
 
 Kurzablauf:
 
 ```bash
 git checkout -b fix/<kurzname>
 git push -u origin fix/<kurzname>
+# optional lokal aufräumen:
+git branch -d <vorheriger-branch>
 ```
 
 ## Merge-Konflikte: `current` oder `incoming`?
