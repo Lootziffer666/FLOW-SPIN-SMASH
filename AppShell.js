@@ -1,25 +1,41 @@
 const { createRunStore } = require('./labState');
-const { submitSuiteRun, listSuiteRuns, renderSuiteRunsPage } = require('./SuiteRunsPage');
+const { submitSuiteRun, listSuiteRuns, getPresetInputs, renderSuiteRunsPage } = require('./SuiteRunsPage');
 const { getVerifiedCandidates, promoteFromWizard, renderPromoteWizard } = require('./PromoteWizard');
 const { getLabConsoleModel, renderLabConsolePage } = require('./LabConsolePage');
 
 function createAppShell() {
   const store = createRunStore();
+  const presetInputs = getPresetInputs();
   const uiState = {
     message: '',
     selectedPromotionRunId: '',
+    selectedPresetKey: '',
+    inputText: '',
   };
 
-  function runSuiteSubmission(inputText) {
+  function runSuiteSubmission(inputText = uiState.inputText) {
     if (store.state.mode !== 'mode-suite') {
       return {
         ok: false,
         message: 'Suite-Modus erforderlich.',
       };
     }
+
     const result = submitSuiteRun(store, inputText);
     uiState.message = result.message;
+    uiState.inputText = String(inputText);
     return result;
+  }
+
+  function selectPreset(presetKey) {
+    const preset = presetInputs.find((entry) => entry.key === presetKey);
+    if (!preset) {
+      return null;
+    }
+
+    uiState.selectedPresetKey = preset.key;
+    uiState.inputText = preset.text;
+    return preset;
   }
 
   function verifyRun(runId) {
@@ -58,6 +74,8 @@ function createAppShell() {
 
     return renderSuiteRunsPage(store, {
       message: uiState.message,
+      inputText: uiState.inputText,
+      selectedPresetKey: uiState.selectedPresetKey,
       promoteWizardHtml: renderPromoteWizard(store, uiState.selectedPromotionRunId),
     });
   }
@@ -73,6 +91,7 @@ function createAppShell() {
       return store.state.mode;
     },
     runSuiteSubmission,
+    selectPreset,
     verifyRun,
     promoteRun,
     selectPromotionRun,
