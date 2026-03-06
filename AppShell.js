@@ -67,6 +67,14 @@ function createAppShell() {
     return promoteRun(uiState.selectedPromotionRunId, actor);
   }
 
+  function setComparisonSelection(artifactIds) {
+    return store.setComparisonSelection(artifactIds);
+  }
+
+  function toggleComparisonSelection(artifactId) {
+    return store.toggleComparisonSelection(artifactId);
+  }
+
   function render() {
     if (store.state.mode === 'mode-lab') {
       return renderLabConsolePage(getLabConsoleModel(store));
@@ -96,6 +104,8 @@ function createAppShell() {
     promoteRun,
     selectPromotionRun,
     promoteSelectedRun,
+    setComparisonSelection,
+    toggleComparisonSelection,
     render,
     getSuiteRuns: () => listSuiteRuns(store),
     getVerifiedCandidates: () => getVerifiedCandidates(store),

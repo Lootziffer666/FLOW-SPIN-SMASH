@@ -1,4 +1,6 @@
-const PRESET_INPUTS = [
+const { createRandomLrsInputs } = require('./benchmarkInputs');
+
+const CORE_PRESET_INPUTS = [
   {
     key: 'reference-de',
     label: 'Referenzsatz DE',
@@ -15,6 +17,8 @@ const PRESET_INPUTS = [
     text: 'even thow i studdied reely hard for the math test yesturday i still got sum qwestions rong becuz i gits cunfused.',
   },
 ];
+
+const PRESET_INPUTS = [...CORE_PRESET_INPUTS, ...createRandomLrsInputs(200)];
 
 function escapeHtml(text) {
   return String(text)
@@ -70,6 +74,11 @@ function renderSuiteRunsPage(store, options = {}) {
   <div>created_at: ${run.created_at}</div>
   <div>status: ${run.status}</div>
   <pre class="bg-card border-border">${escapeHtml(run.corrected_text)}</pre>
+  <div>Zeichen Input: ${run.input_length_chars}</div>
+  <div>Zeichen Output: ${run.output_length_chars}</div>
+  <div>Tokens Input: ${run.input_token_count}</div>
+  <div>Tokens Output: ${run.output_token_count}</div>
+  <div>Geändert: ${run.changed ? 'Ja' : 'Nein'}</div>
   ${verifyControl}
 </li>`;
     })
@@ -82,7 +91,7 @@ function renderSuiteRunsPage(store, options = {}) {
   <select id="preset-input" name="preset-input">${presetOptions}</select>
   <label for="suite-input">Eingabe</label>
   <textarea id="suite-input" name="suite-input">${escapeHtml(inputText)}</textarea>
-  <button data-action="submit-run" class="bg-primary text-primary-foreground">Run erstellt.</button>
+  <button data-action="submit-run" class="bg-primary text-primary-foreground">Verarbeiten</button>
   <div class="bg-status-neutral" data-role="message">${message}</div>
   <ul>${runItems}</ul>
   ${wizard}
