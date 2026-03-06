@@ -1,7 +1,8 @@
 const assert = require('node:assert/strict');
 const { createAppShell } = require('./AppShell');
 const { getPresetInputs } = require('./SuiteRunsPage');
-const { renderLabConsolePage } = require('./LabConsolePage');
+const { renderLabConsolePage, getLabConsoleModel } = require('./LabConsolePage');
+const { createRunStore } = require('./labState');
 
 const app = createAppShell();
 
@@ -34,6 +35,20 @@ app.promoteRun(runs[0].run_id, 'qa-user');
 app.promoteRun(runs[1].run_id, 'qa-user');
 const labModelAfterPromotions = app.getLabConsoleModel();
 assert.equal(labModelAfterPromotions.promoted_artifacts.length, 2);
+
+
+// P1 invariant: current promoted artifact must be first entry in history
+assert.deepEqual(labModelAfterPromotions.artifact, labModelAfterPromotions.promoted_artifacts[0]);
+
+// P1 invariant: previously promoted snapshot remains immutable after later promotions
+const snapshotBeforeFurtherPromotion = structuredClone(labModelAfterPromotions.promoted_artifacts[1].snapshot);
+assert.deepEqual(snapshotBeforeFurtherPromotion, labModelAfterPromotions.promoted_artifacts[1].snapshot);
+
+// P2 audit chain basics
+assert.equal(typeof labModelAfterPromotions.audit_log[0].entry_hash, 'string');
+assert.equal(typeof labModelAfterPromotions.audit_log[1].entry_hash, 'string');
+assert.equal(labModelAfterPromotions.audit_log[0].prev_entry_hash, labModelAfterPromotions.audit_log[1].entry_hash);
+assert.equal(labModelAfterPromotions.audit_log[1].prev_entry_hash, 'root');
 
 // A) promoted artifact contains snapshot object
 const artifactA = labModelAfterPromotions.promoted_artifacts[0];
@@ -307,5 +322,256 @@ const noSelectedIdsModel = {
 };
 const noSelectedIdsHtml = renderLabConsolePage(noSelectedIdsModel);
 assert.equal(noSelectedIdsHtml.includes('artifact-noselect'), true);
+
+
+// P4/P5 scaling smoke: many artifacts + comparisons should remain renderable
+const scaleStore = createRunStore();
+for (let i = 0; i < 40; i++) {
+  const input = `ich hab das gestern gelsen ${i}`;
+  const run = scaleStore.createRun(input);
+  scaleStore.verifyRun(run.run_id);
+  scaleStore.promoteVerifiedRun(run.run_id, 'scale-user');
+}
+
+const scaleModel = getLabConsoleModel(scaleStore);
+assert.equal(scaleModel.promoted_artifacts.length, 40);
+assert.deepEqual(scaleModel.artifact, scaleModel.promoted_artifacts[0]);
+assert.equal(scaleModel.audit_log.length, 40);
+assert.equal(scaleModel.audit_log[0].prev_entry_hash, scaleModel.audit_log[1].entry_hash);
+
+const compareIds = scaleModel.promoted_artifacts.slice(0, 10).map((artifact) => artifact.artifact_id);
+scaleStore.setComparisonSelection(compareIds);
+const scaleCompareModel = getLabConsoleModel(scaleStore);
+assert.equal(scaleCompareModel.comparison_rows.length, 10);
+const scaleHtml = renderLabConsolePage(scaleCompareModel);
+assert.equal(scaleHtml.includes(compareIds[0]), true);
+assert.equal(scaleHtml.includes('Protokoll:'), true);
+
+// Benchmark evaluation framework tests
+const benchStore = createRunStore();
+const baseRun = benchStore.createRun('ich hab das gestern gelsen');
+const candRun = benchStore.createRun('ich hab das gestern gelsen und dachte das');
+benchStore.verifyRun(baseRun.run_id);
+benchStore.verifyRun(candRun.run_id);
+const baselineArtifact = benchStore.promoteVerifiedRun(baseRun.run_id, 'bench-user');
+const candidateArtifact = benchStore.promoteVerifiedRun(candRun.run_id, 'bench-user');
+
+const suiteV1 = benchStore.registerBenchmarkSuite({
+  suite_id: 'suite-de',
+  suite_version: 'v1',
+  segments: {
+    core_de: ['ich hab das gestern gelsen'],
+    regression_de: ['ich hab das gestern gelsen und dachte das'],
+    stress_de: ['x'.repeat(350)],
+    no_change: ['Ich habe das gestern gelesen.'],
+    edge: ['<script>alert("x")</script>'],
+  },
+});
+assert.equal(typeof suiteV1.dataset_hash, 'string');
+
+// 1) Determinism pass
+const determinismPassEval = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v1',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+  size_class: 'S',
+  baseline_case_results: [
+    {
+      input_text: 'dup',
+      corrected_text: 'dup-out',
+      segment: 'core_de',
+      rule_hits_SN: 1,
+      rule_hits_total: 1,
+    },
+    {
+      input_text: 'dup',
+      corrected_text: 'dup-out',
+      segment: 'core_de',
+      rule_hits_SN: 1,
+      rule_hits_total: 1,
+    },
+  ],
+  case_results: [
+    {
+      input_text: 'dup',
+      corrected_text: 'dup-out',
+      segment: 'core_de',
+      rule_hits_SN: 1,
+      rule_hits_total: 1,
+    },
+    {
+      input_text: 'dup',
+      corrected_text: 'dup-out',
+      segment: 'core_de',
+      rule_hits_SN: 1,
+      rule_hits_total: 1,
+    },
+  ],
+});
+assert.equal(determinismPassEval.ok, true);
+assert.notEqual(determinismPassEval.evaluation.gate_result, 'fail');
+
+// 2) Determinism fail
+const determinismFailEval = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v1',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+  size_class: 'S',
+  baseline_case_results: [
+    { input_text: 'dup2', corrected_text: 'same', segment: 'core_de' },
+    { input_text: 'dup2', corrected_text: 'same', segment: 'core_de' },
+  ],
+  case_results: [
+    { input_text: 'dup2', corrected_text: 'same-a', segment: 'core_de' },
+    { input_text: 'dup2', corrected_text: 'same-b', segment: 'core_de' },
+  ],
+});
+assert.equal(determinismFailEval.evaluation.gate_result, 'fail');
+assert.equal(determinismFailEval.evaluation.gate_reasons.includes('determinism_failed'), true);
+
+// 3) No-change regression (warn/fail)
+const noChangeRegressionEval = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v1',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+  size_class: 'M',
+  baseline_case_results: [
+    { input_text: 'A', corrected_text: 'A', segment: 'no_change' },
+    { input_text: 'B', corrected_text: 'B', segment: 'no_change' },
+  ],
+  case_results: [
+    { input_text: 'A', corrected_text: 'A geändert', segment: 'no_change' },
+    { input_text: 'B', corrected_text: 'B geändert', segment: 'no_change' },
+  ],
+});
+assert.equal(['warn', 'fail'].includes(noChangeRegressionEval.evaluation.gate_result), true);
+
+// 4) Rule-class drift (warn at least)
+const ruleDriftEval = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v1',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+  size_class: 'M',
+  baseline_case_results: [
+    { input_text: 'r1', corrected_text: 'r1', segment: 'core_de', rule_hits_SN: 10, rule_hits_total: 10 },
+  ],
+  case_results: [
+    { input_text: 'r1', corrected_text: 'r1x', segment: 'core_de', rule_hits_PG: 10, rule_hits_total: 10 },
+  ],
+});
+assert.equal(['warn', 'fail'].includes(ruleDriftEval.evaluation.gate_result), true);
+assert.equal(ruleDriftEval.evaluation.gate_reasons.includes('rule_class_drift'), true);
+
+// 5) Audit chain fail => hard fail
+benchStore.state.auditLog[0].prev_entry_hash = 'broken';
+const auditFailEval = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v1',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+  size_class: 'S',
+  baseline_case_results: [{ input_text: 'c', corrected_text: 'c' }],
+  case_results: [{ input_text: 'c', corrected_text: 'c' }],
+});
+assert.equal(auditFailEval.evaluation.gate_result, 'fail');
+assert.equal(auditFailEval.evaluation.gate_reasons.includes('audit_chain_inconsistent'), true);
+
+// 6) Snapshot anchoring for evaluation summary
+const anchoredCandidate = benchStore.state.promotedArtifacts.find((entry) => entry.artifact_id === candidateArtifact.artifact_id);
+assert.ok(anchoredCandidate.evaluation_summary);
+assert.equal(typeof anchoredCandidate.evaluation_summary.evaluation_id, 'string');
+assert.equal(anchoredCandidate.evaluation_summary.dataset_hash, suiteV1.dataset_hash);
+assert.equal(typeof anchoredCandidate.evaluation_summary.metrics_hash, 'string');
+
+// 7) Comparison only with matching dataset
+const compareInvalid = benchStore.compareArtifactsOnBenchmark({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v1',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+});
+assert.equal(compareInvalid.ok, false);
+assert.equal(['dataset_mismatch', 'evaluation_not_found'].includes(compareInvalid.reason), true);
+
+// Re-register and run clean evaluation for valid benchmark comparison + multi-artifact compare stability
+benchStore.registerBenchmarkSuite({
+  suite_id: 'suite-de',
+  suite_version: 'v2',
+  segments: {
+    core_de: ['gleich1', 'gleich2'],
+    regression_de: ['gleich3'],
+    stress_de: [],
+    no_change: [],
+    edge: [],
+  },
+});
+
+const baseEvalV2 = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v2',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: baselineArtifact.artifact_id,
+  size_class: 'S',
+  baseline_case_results: [
+    { input_text: 'gleich1', corrected_text: 'out-1', segment: 'core_de' },
+    { input_text: 'gleich2', corrected_text: 'out-2', segment: 'core_de' },
+  ],
+  case_results: [
+    { input_text: 'gleich1', corrected_text: 'out-1', segment: 'core_de' },
+    { input_text: 'gleich2', corrected_text: 'out-2', segment: 'core_de' },
+  ],
+});
+assert.equal(baseEvalV2.ok, true);
+
+const candEvalV2 = benchStore.runBenchmarkEvaluation({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v2',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+  size_class: 'S',
+  baseline_case_results: [
+    { input_text: 'gleich1', corrected_text: 'out-1', segment: 'core_de' },
+    { input_text: 'gleich2', corrected_text: 'out-2', segment: 'core_de' },
+  ],
+  case_results: [
+    { input_text: 'gleich1', corrected_text: 'out-1', segment: 'core_de' },
+    { input_text: 'gleich2', corrected_text: 'out-2b', segment: 'core_de' },
+  ],
+});
+assert.equal(candEvalV2.ok, true);
+
+// 8) Multi-artifact comparison remains stable and renderable
+const compareValid = benchStore.compareArtifactsOnBenchmark({
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v2',
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  candidate_artifact_id: candidateArtifact.artifact_id,
+});
+assert.equal(compareValid.ok, true);
+assert.equal(typeof compareValid.same_output_rate, 'number');
+assert.equal(typeof compareValid.deltas.changed_rate, 'number');
+
+const benchmarkModel = getLabConsoleModel(benchStore);
+assert.ok(benchmarkModel.current_evaluation);
+const benchmarkHtml = renderLabConsolePage(benchmarkModel);
+assert.equal(benchmarkHtml.includes('Evaluation Summary'), true);
+assert.equal(benchmarkHtml.includes('Baseline-Delta'), true);
+assert.equal(benchmarkHtml.includes('Integrität'), true);
+
+const promoteDecisionAudit = benchStore.appendBenchmarkPromoteDecision({
+  artifact_id: candidateArtifact.artifact_id,
+  baseline_artifact_id: baselineArtifact.artifact_id,
+  benchmark_suite_id: 'suite-de',
+  benchmark_suite_version: 'v2',
+  evaluation_id: candEvalV2.evaluation.evaluation_id,
+  gate_result: candEvalV2.evaluation.gate_result,
+  actor: 'qa-user',
+});
+assert.equal(promoteDecisionAudit.event_type, 'benchmark_promote_decision');
+assert.equal(promoteDecisionAudit.evaluation_id, candEvalV2.evaluation.evaluation_id);
 
 console.log('LAB integration test passed.');
