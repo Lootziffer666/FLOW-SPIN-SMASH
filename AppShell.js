@@ -7,7 +7,12 @@ function createAppShell() {
   const store = createRunStore();
 
   function runSuiteSubmission(inputText) {
-    store.setModeSuite();
+    if (store.state.mode !== 'mode-suite') {
+      return {
+        ok: false,
+        message: 'Suite-Modus erforderlich.',
+      };
+    }
     return submitSuiteRun(store, inputText);
   }
 
@@ -19,9 +24,11 @@ function createAppShell() {
     return promoteFromWizard(store, runId, actor);
   }
 
-
   return {
     get mode() {
+      return store.state.mode;
+    },
+    get modeClass() {
       return store.state.mode;
     },
     get modeClassName() {
