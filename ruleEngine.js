@@ -43,8 +43,11 @@ function normalizeSentenceStarts(text) {
     .replace(/([.!?]\s+)([a-zäöü])/gu, (match, prefix, letter) => `${prefix}${letter.toUpperCase()}`);
 }
 
-// ZH1-MVP: deterministische Reihenfolge ohne Scoring.
-function runNormalizationWithMetadata(text = '') {
+// ZH1-MVP: deterministische Reihenfolge ohne Scoring
+function runNormalization(text = '') {
+  return runNormalizationWithMetadata(text).corrected;
+}
+
   const source = String(text);
 
   const snApplied = applyRulesWithHits(source, SN_RULES);
