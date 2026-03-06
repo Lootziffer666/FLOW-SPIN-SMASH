@@ -1,5 +1,3 @@
-// Deterministischer Regelmotor: SN -> SL -> MO -> PG
-
 const SN_RULES = require('./rules.sn');
 const SL_RULES = require('./rules.sl');
 const MO_RULES = require('./rules.mo');
@@ -23,6 +21,7 @@ function normalizeSentenceStarts(text) {
     .replace(/([.!?]\s+)([a-zäöü])/gu, (match, prefix, letter) => `${prefix}${letter.toUpperCase()}`);
 }
 
+// ZH1-MVP: deterministische Reihenfolge ohne Scoring.
 function runNormalization(text = '') {
   const source = String(text);
   const snApplied = applyRules(source, SN_RULES);
