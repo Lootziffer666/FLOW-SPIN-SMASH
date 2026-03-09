@@ -7,6 +7,7 @@ Deterministischer FLOW-MVP-Normalizer (SN -> SL -> MO -> PG) mit minimaler UI-Ve
 - `node test_normalization.js`
 - `node test_rules_debug.js`
 - `node test_ui_integration.js`
+- `node test_flow_learning.js`
 
 ## PR-Hinweis (Codex)
 
@@ -28,4 +29,23 @@ Schnellcheck vor Commit:
 
 ```bash
 rg -n "^(<<<<<<<|=======|>>>>>>>)" -g '*.js' .
+```
+
+
+## Native Windows App (FLOW_Normalizer.cs)
+
+Status im Repo:
+- `FLOW_Normalizer.cs` ist jetzt enthalten (native WinForms + Keyboard-Hook + Tray).
+- Die App ruft `node loom_cli.js <wort>` auf und nutzt damit direkt `pipeline.js`.
+
+Wenn nach dem Start "nichts passiert":
+1. Prüfen, ob ein Tray-Icon sichtbar ist (SystemIcons-Fallback, auch ohne `flow_logo.ico`).
+2. `flow_startup.log` öffnen (wird im EXE-Ordner geschrieben).
+3. Sicherstellen, dass `node` im PATH ist (`node -v`).
+4. Sicherstellen, dass `loom_cli.js` + `pipeline.js` im selben Ordner wie die EXE liegen.
+5. Testen mit: `node loom_cli.js "ich hab zeit"`.
+
+Build (Windows):
+```bash
+csc /target:winexe /out:FLOW_Normalizer.exe FLOW_Normalizer.cs
 ```
