@@ -1,11 +1,134 @@
-// pipeline.js
-// Einstiegspunkt für die Korrektur-Pipeline
+'use strict';
 
-const { runNormalization } = require('./ruleEngine.js');
+const { runNormalizationWithMetadata } = require('./ruleEngine.js');
+const {
+  DEFAULT_RULES_PATH,
+  loadRules,
+  addException,
+  addContextRule,
+  normalizeLanguage,
+} = require('./flowRulesStore');
 
-function runCorrection(text) {
-  const corrected = runNormalization(text);
-  return { corrected };
+const EMPTY_RULE_HITS = Object.freeze({
+  EN: 0,
+  CTX: 0,
+  SN: 0,
+  SL: 0,
+  MO: 0,
+  PG: 0,
+  total: 0,
+});
+
+function asOptions(langOrOptions) {
+  if (typeof langOrOptions === 'string') {
+    return { language: langOrOptions };
+  }
+
+  return langOrOptions || {};
 }
 
-module.exports = { runCorrection };
+function resolveRulesPath(options = {}) {
+  return options.rulesPath || process.env.FLOW_RULES_PATH || DEFAULT_RULES_PATH;
+}
+
+function resolveLanguage(langOrOptions) {
+  const options = asOptions(langOrOptions);
+  return normalizeLanguage(options.language || options.lang || process.env.FLOW_LANGUAGE || 'de');
+}
+
+function resolveEnPreset(options = {}) {
+  return options.enPreset || process.env.FLOW_EN_PRESET || 'en-core-safe';
+}
+
+function getLearnedReplacement(text, rules) {
+  const source = String(text ?? '').trim();
+  const normalizedKey = source.toLowerCase();
+  if (!normalizedKey) return null;
+
+  if (rules.exceptions[normalizedKey]) {
+    return { corrected: rules.exceptions[normalizedKey], source: 'exception' };
+  }
+
+  const matchedContextRule = rules.contextRules.find((rule) =>
+    normalizedKey.includes(String(rule.trigger).toLowerCase())
+  );
+
+  if (matchedContextRule) {
+    return { corrected: matchedContextRule.replace, source: 'context' };
+  }
+
+  return null;
+}
+
+function runCorrection(text, langOrOptions) {
+  const source = String(text ?? '');
+  const options = asOptions(langOrOptions);
+  const language = resolveLanguage(options);
+
+  if (!source.trim()) {
+    return {
+      corrected: '',
+      rule_hits: { ...EMPTY_RULE_HITS },
+      applied_learning: null,
+      language,
+      lang: language,
+    };
+  }
+
+  const rulesPath = resolveRulesPath(options);
+  const rules = loadRules(rulesPath, language);
+  const learned = getLearnedReplacement(source, rules);
+
+  if (learned) {
+    return {
+      corrected: learned.corrected,
+      rule_hits: { ...EMPTY_RULE_HITS },
+      applied_learning: learned.source,
+      language,
+      lang: language,
+    };
+  }
+
+  const normalized = runNormalizationWithMetadata(source, {
+    language,
+    enPreset: resolveEnPreset(options),
+  });
+
+  return {
+    corrected: normalized.corrected,
+    rule_hits: normalized.rule_hits || { ...EMPTY_RULE_HITS },
+    applied_learning: null,
+    language,
+    lang: language,
+  };
+}
+
+function learnException(original, corrected, langOrOptions) {
+  const options = asOptions(langOrOptions);
+  return addException(
+    original,
+    corrected,
+    resolveRulesPath(options),
+    resolveLanguage(options)
+  );
+}
+
+function learnContextRule(trigger, replace, langOrOptions) {
+  const options = asOptions(langOrOptions);
+  return addContextRule(
+    trigger,
+    replace,
+    resolveRulesPath(options),
+    resolveLanguage(options)
+  );
+}
+
+module.exports = {
+  runCorrection,
+  learnException,
+  learnContextRule,
+  resolveRulesPath,
+  resolveLanguage,
+  resolveEnPreset,
+  EMPTY_RULE_HITS,
+};
