@@ -1,19 +1,51 @@
 // loom_cli.js
-// Minimaler CLI-Wrapper für FLOW-Pipeline (stdout: nur korrigierter Text)
+// CLI-Wrapper für FLOW-Pipeline + Lernkommandos
 
-const { runCorrection } = require('./pipeline.js');
+const {
+  runCorrection,
+  learnException,
+  learnContextRule,
+} = require('./pipeline.js');
 
-const input = process.argv.slice(2).join(' ').trim();
+function getOptionValue(args, optionName) {
+  const idx = args.indexOf(optionName);
+  if (idx === -1 || idx + 1 >= args.length) return undefined;
+  return args[idx + 1];
+}
+
+function removeOption(args, optionName) {
+  const idx = args.indexOf(optionName);
+  if (idx === -1) return args;
+  const next = [...args];
+  next.splice(idx, 2);
+  return next;
+}
+
+const rawArgs = process.argv.slice(2);
+const rulesPath = getOptionValue(rawArgs, '--rules-path');
+const args = removeOption(rawArgs, '--rules-path');
+
+if (args[0] === '--learn-exception') {
+  const original = args[1] || '';
+  const corrected = args[2] || '';
+  learnException(original, corrected, { rulesPath });
+  process.stdout.write('OK');
+  process.exit(0);
+}
+
+if (args[0] === '--learn-context') {
+  const trigger = args[1] || '';
+  const replace = args[2] || '';
+  learnContextRule(trigger, replace, { rulesPath });
+  process.stdout.write('OK');
+  process.exit(0);
+}
+
+const input = args.join(' ').trim();
 if (!input) {
   process.stdout.write('');
   process.exit(0);
 }
 
-try {
-  const result = runCorrection(input);
-  process.stdout.write((result && result.corrected) || '');
-} catch {
-  // Für externe Aufrufer robust bleiben: bei Fehlern leere Ausgabe statt Stacktrace.
-  process.stdout.write('');
-  process.exit(0);
-}
+const result = runCorrection(input, { rulesPath });
+process.stdout.write((result && result.corrected) || '');
