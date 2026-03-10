@@ -250,6 +250,28 @@ class FLOW_Normalizer
         MessageBox.Show(status, "FLOW Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
+    private static void ShowShortcutsDialog()
+    {
+        var text =
+            "Tastenkürzel\n" +
+            "────────────────────────────────\n\n" +
+            "Ctrl + Alt + Space\n" +
+            "    Sprache umschalten  (DE ↔ EN)\n\n" +
+            "Automatische Normalisierung\n" +
+            "    Flow korrigiert nach Leerzeichen,\n" +
+            "    Enter und Punkt automatisch.\n\n" +
+            "Tray-Icon (rechte Maustaste)\n" +
+            "    → Persönliches Wörterbuch\n" +
+            "    → Sprache wählen\n" +
+            "    → Status / Diagnose\n" +
+            "    → Regeln bearbeiten\n" +
+            "    → Log öffnen\n" +
+            "    → Über FLOW\n" +
+            "    → Beenden";
+
+        MessageBox.Show(text, "FLOW – Tastenkürzel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+
     private static void ShowAboutDialog()
     {
         var dark = IsDarkModePreferred();
@@ -510,7 +532,17 @@ class FLOW_Normalizer
             SendKeys.SendWait("^c");
             Application.DoEvents();
 
-            return Clipboard.ContainsText() ? Clipboard.GetText().Trim() : string.Empty;
+            var word = Clipboard.ContainsText() ? Clipboard.GetText().Trim() : string.Empty;
+
+            // Selektion aufheben und Cursor zurück ans Wortende setzen.
+            // Nach Ctrl+Shift+Left liegt der aktive Cursor am linken Rand der Selektion;
+            // {RIGHT} springt an den rechten Rand (= ursprüngliche Position) ohne weitere Bewegung.
+            // Ohne diesen Schritt würde der nachfolgende Auslöser-Tastendruck (Space/Enter/Punkt)
+            // die gesamte Selektion ersetzen und das Wort löschen.
+            if (!string.IsNullOrEmpty(word))
+                SendKeys.SendWait("{RIGHT}");
+
+            return word;
         }
         catch (Exception ex)
         {
@@ -635,6 +667,7 @@ class FLOW_Normalizer
             languageMenu.DropDownItems.Add("Englisch", null, (s, e) => SetLanguage("en"));
             menu.Items.Add(languageMenu);
 
+            menu.Items.Add("Tastenkürzel", null, (s, e) => ShowShortcutsDialog());
             menu.Items.Add("Status anzeigen", null, (s, e) => ShowStatusDialog());
             menu.Items.Add("Diagnose erneut prüfen", null, (s, e) => RunStartupSelfCheck());
             menu.Items.Add("Regeln bearbeiten (flow_rules.json)", null, (s, e) => Process.Start("notepad.exe", rulesPath));
