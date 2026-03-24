@@ -17,6 +17,8 @@ const EMPTY_RULE_HITS = Object.freeze({
   SL: 0,
   MO: 0,
   PG: 0,
+  GR: 0,
+  PUNCT: 0,
   total: 0,
 });
 
