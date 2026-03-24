@@ -1,5 +1,62 @@
 # Was macht FLOW besonders? – Vergleich mit anderen Tools
 
+> **Wichtige Einordnung:** FLOW ist keine eigenständige Sprachengine, sondern eine
+> **Anwendungsschicht**, die auf der übergeordneten Engine **SPIN** basiert.
+> Der Vergleich mit Tools wie LanguageTool gilt daher nicht für FLOW allein,
+> sondern für das Gesamtsystem **SPIN + FLOW**.
+> Dieses Verhältnis wird in Abschnitt 0 erklärt, bevor FLOW selbst charakterisiert wird.
+
+---
+
+## 0 Das Ökosystem: SPIN und FLOW
+
+### 0.1 SPIN – die übergeordnete Sprachengine
+
+**SPIN** (Sentence Processing & Interpretation Network) ist das eigentliche diagnostische Sprachinstrument.  
+Es zerlegt Sätze in **Bedeutungs-Chunks** (Subjekt, Prädikat, Objekt, Relation, Zustand u. a.), macht Satzstruktur per Drag & Drop physisch erfahrbar und gibt nach einem Re-Rendering eine strukturelle **Diagnose** aus (z. B. „stabil", „mehrkernig", „konfliktär").
+
+SPIN ist ausdrücklich **kein Korrektor**.  
+SPIN schreibt nicht, bewertet nicht und schlägt keine Texte vor.  
+Sein Ziel: Struktur sichtbar machen, damit Autor:innen selbst entscheiden können.
+
+Zielgruppe: komplex denkende Autor:innen, ND-Personen (ADHS, Autismus, AuDHD), Menschen, die bewusst nicht generativ schreiben wollen.
+
+### 0.2 FLOW – abgeleitet von SPIN
+
+**FLOW** ist eine aus SPIN hergeleitete **Normalisierungsschicht**, die sich auf einen spezifischen Anwendungsfall konzentriert: die orthografische Korrektur für Menschen mit Lese-Rechtschreib-Schwäche (LRS).
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  SPIN – Strukturdiagnose-Engine                          │
+│  Chunking · Drag & Drop · Re-Render · Diagnose           │
+└──────────────────────┬───────────────────────────────────┘
+                       │ liefert Basis-Konzepte und Engine
+┌──────────────────────▼───────────────────────────────────┐
+│  FLOW – Orthografische Normalisierungsschicht            │
+│  SN → SL → MO → PG · Keyboard-Hook · Lernregeln         │
+└──────────────────────────────────────────────────────────┘
+```
+
+FLOW übernimmt von SPIN:
+- das deterministische, regelbasierte Paradigma (kein LLM, kein generativer Output)
+- den Grundsatz der Transparenz (jede Änderung ist auf eine Regel zurückführbar)
+- den Datenschutz-Grundsatz (vollständig lokal, keine Cloud-Aufrufe)
+
+FLOW fügt hinzu:
+- die systemweite Echtzeit-Korrektur via Windows-Keyboard-Hook
+- die LRS-spezifische Vierstufen-Pipeline (SN → SL → MO → PG)
+- die sofortige Lernfähigkeit über `flow_rules.json`
+
+### 0.3 Konsequenz für den Toolvergleich
+
+| Vergleichsobjekt | FLOW allein | SPIN + FLOW |
+|-----------------|-------------|-------------|
+| LanguageTool | Nein – FLOW adressiert nur LRS-Orthografie, nicht allgemeine Grammatik | Ja – zusammen decken sie Strukturdiagnose + Rechtschreibkorrektur ab |
+| Grammarly | Nein | Annähernd – mit dem Unterschied: kein generativer Output, kein Cloud-Zwang |
+| Word AutoCorrect | Teilweise – systemweit, aber spezialisierter | Ja – mit deutlich tieferer linguistischer Grundlage |
+
+---
+
 ## 1 Was macht FLOW besonders?
 
 FLOW ist ein **deterministischer, systemweiter Orthografie-Normalizer**, der speziell für die Fehlerbilder der Lese-Rechtschreib-Schwäche (LRS) entwickelt wurde.  
@@ -51,6 +108,9 @@ Die Regeln landen in `flow_rules.json` und werden sofort aktiv – kein Neustart
 
 ## 2 Machen andere Tools das ähnlich?
 
+Die folgenden Vergleiche beziehen sich auf **FLOW allein** (Orthografie-Normalisierung).  
+Für den Vergleich auf Systemebene siehe Abschnitt 0.3.
+
 ### 2.1 LanguageTool (open-source)
 
 | Merkmal | LanguageTool | FLOW |
@@ -61,8 +121,9 @@ Die Regeln landen in `flow_rules.json` und werden sofort aktiv – kein Neustart
 | LRS-Fokus | Nein (allgemeine Grammatik) | Ja |
 | Offline | Ja (selbst gehostet) | Ja (lokal) |
 | Transparenz | Teilweise (Regel-IDs) | Vollständig (rule_hits) |
+| Strukturdiagnose | Nein | Nein (→ SPIN) |
 
-**Fazit:** LanguageTool ist mächtiger bei allgemeiner Grammatik, aber nicht LRS-spezifisch und nicht systemweit.
+**Fazit:** LanguageTool deckt allgemeine Grammatik breiter ab. FLOW allein ist kein Konkurrent von LanguageTool – **SPIN + FLOW zusammen** sind es, da sie Strukturdiagnose und Orthografiekorrektur verbinden, ohne generativen Output und ohne Cloud-Abhängigkeit.
 
 ### 2.2 Microsoft Editor / Word AutoCorrect
 
@@ -93,7 +154,7 @@ FLOW geht hier deutlich weiter.
 
 ---
 
-## 3 Was kann FLOW von anderen lernen?
+## 3 Was kann das SPIN+FLOW-System von anderen lernen?
 
 ### 3.1 Größere Regeldatenbank (von LanguageTool)
 
@@ -117,43 +178,58 @@ FLOW könnte eine Linux/macOS-Variante des Keyboard-Hooks auf dieser Basis anbie
 
 ---
 
-## 4 Was können andere von FLOW lernen?
+## 4 Was können andere von SPIN+FLOW lernen?
 
-### 4.1 LRS-spezifische Fehlerklassifizierung
+### 4.1 Trennung von Normalisierung und Strukturdiagnose
+
+Die meisten Tools mischen Orthografiekorrektur und Stilbewertung.  
+SPIN+FLOW trennt beides konsequent: FLOW normalisiert die Oberfläche, SPIN analysiert die Tiefenstruktur – ohne je Entscheidungen für den Nutzer zu treffen.
+
+### 4.2 LRS-spezifische Fehlerklassifizierung
 
 Die Trennung in SN / SL / MO / PG ermöglicht eine präzise Diagnose: Welche Fehlerklasse tritt bei einem Nutzer wie häufig auf?  
 Tools wie LanguageTool oder Duden Mentor könnten diese Klassifizierung für gezielte Lernhilfen übernehmen.
 
-### 4.2 Protected Spans als Standard
+### 4.3 Protected Spans als Standard
 
 Das Konzept, technische Zeichenketten (URLs, Code, Abkürzungen) explizit zu schützen, fehlt in vielen Korrektur-Tools und führt zu fehlerhaften Korrekturen in technischen Texten.  
-FLOW's Ansatz ist einfach und übertragbar.
+FLOWs Ansatz ist einfach und übertragbar.
 
-### 4.3 Vollständige lokale Verarbeitung ohne Datenweitergabe
+### 4.4 Vollständige lokale Verarbeitung ohne Datenweitergabe
 
 FLOW verarbeitet alles lokal – kein Text verlässt das Gerät.  
 Für datenschutzsensible Umgebungen (Schulen, medizinische Einrichtungen) ist das ein entscheidender Vorteil, den andere Tools häufig nicht bieten.
 
-### 4.4 Deterministisches, auditierbares Regelwerk
+### 4.5 Deterministisches, auditierbares Regelwerk
 
 Jede Korrektur ist an eine Regel gebunden, jede Regel hat eine klare ID.  
-Dieses Prinzip macht FLOW auditierbar und erklärt, warum eine Korrektur vorgenommen wurde – besonders wertvoll in pädagogischen Kontexten.
+Dieses Prinzip macht das System auditierbar und erklärt, warum eine Korrektur vorgenommen wurde – besonders wertvoll in pädagogischen Kontexten.
+
+### 4.6 Anti-generativer Ansatz als bewusste Designentscheidung (von SPIN)
+
+SPIN formuliert explizit eine **Anti-Feature-Charta**: kein generativer Output, keine Entscheidungsabnahme, keine Bewertung.  
+Das ist keine Einschränkung, sondern Programm.  
+In einer Zeit, in der KI-Tools oft zu viel übernehmen, zeigt SPIN+FLOW, dass Instrumente, die Strukturen sichtbar machen statt zu ersetzen, einen eigenen Wert haben.
 
 ---
 
 ## 5 Zusammenfassung
 
 ```
-┌────────────────────────────────────────────────────────┐
-│  FLOW ist einzigartig in der Kombination aus:          │
-│  • LRS-spezifischer Vierstufen-Pipeline                │
-│  • Systemweiter Echtzeit-Korrektur (Keyboard-Hook)     │
-│  • Voller Transparenz und Determinismus                │
-│  • Lokaler Verarbeitung (Datenschutz)                  │
-│  • Sofortiger Lernfähigkeit ohne Modell-Retraining     │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  FLOW allein:                                                │
+│  • LRS-Orthografienormalizer (Keyboard-Hook, Windows)        │
+│  • Deterministisch, lokal, transparent                       │
+│  • Kein LanguageTool-Konkurrent – andere Problemklasse       │
+├──────────────────────────────────────────────────────────────┤
+│  SPIN + FLOW zusammen:                                       │
+│  • SPIN: Strukturdiagnose ohne generativen Output            │
+│  • FLOW: Orthografiekorrektur ohne Cloud und ohne ML         │
+│  • Zusammen: vollständiges ND-Schreibsystem                  │
+│  • Dann vergleichbar mit LanguageTool – bei komplett         │
+│    anderem Paradigma (deterministisch, lokal, kein LLM)      │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-Kein bekanntes öffentliches Tool vereint alle fünf Eigenschaften.  
 FLOW kann von etablierten Tools vor allem durch **breitere Regeldatenbanken** und **plattformübergreifende Unterstützung** profitieren.  
-Umgekehrt bietet FLOW mit seiner **LRS-Klassifizierung**, dem **Protected-Spans-Konzept** und dem **auditierbaren Regelwerk** Ansätze, von denen andere Korrektur-Tools lernen können.
+Das Gesamtsystem SPIN+FLOW bietet mit seiner **strikten Nicht-Generativität**, dem **LRS-Klassifizierungsmodell** und dem **auditierbaren Regelwerk** Ansätze, die für andere Korrektur-Tools – besonders im pädagogischen und ND-Kontext – lehrreich sind.
