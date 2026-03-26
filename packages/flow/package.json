@@ -1,0 +1,26 @@
+{
+  "name": "@loot/flow",
+  "version": "1.0.0",
+  "description": "FLOW — Deterministic orthographic normalization engine (SN -> SL -> MO -> PG -> GR)",
+  "main": "src/pipeline.js",
+  "bin": {
+    "flow": "src/loom_cli.js"
+  },
+  "scripts": {
+    "test": "node test/test_normalization.js && node test/test_ui_integration.js && node test/test_flow_learning.js && node test/test_grammar_rules.js && node test/test_phonetic_similarity.js && node test/test_confidence_filter.js && node test/test_rules_debug.js && node test/test_random_lrs_batch.js && node test/test_lab_integration.js",
+    "test:unit": "node test/test_normalization.js && node test/test_ui_integration.js && node test/test_flow_learning.js",
+    "test:rules": "node test/test_rules_debug.js",
+    "test:lab": "node test/test_lab_integration.js",
+    "test:batch": "node test/test_random_lrs_batch.js",
+    "debug:rules": "node test/debug_rule_checks.js",
+    "normalize": "node src/loom_cli.js"
+  },
+  "dependencies": {
+    "@loot/shared": "0.1.0"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
