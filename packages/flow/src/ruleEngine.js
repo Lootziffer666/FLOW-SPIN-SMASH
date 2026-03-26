@@ -4,11 +4,15 @@ const SN_RULES = require('./rules.sn');
 const SL_RULES = require('./rules.sl');
 const MO_RULES = require('./rules.mo');
 const PG_RULES = require('./rules.pg');
-const GR_RULES = require('./rules.gr');
 const EN_RULES = require('./rules.en');
-const CONTEXT_RULES = require('./contextWindowRules');
 const { getPunctRules } = require('./rules.punct');
-const { detectClauses } = require('./clauseDetector');
+
+// Shared engine (@loot/shared)
+const {
+  GR_RULES,
+  contextWindowRules: CONTEXT_RULES,
+  detectClauses,
+} = require('@loot/shared');
 
 // Protected Spans (Code, Pfade, Namen, UI-Labels etc.)
 const PROTECTED_PATTERNS = [

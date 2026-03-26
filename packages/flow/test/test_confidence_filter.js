@@ -5,8 +5,8 @@ const {
   filterByConfidence,
   errorProfile,
   DEFAULT_MIN_CONFIDENCE,
-} = require('../src/confidenceFilter');
-const contextWindowRules = require('../src/contextWindowRules');
+} = require('@loot/shared');
+const { contextWindowRules } = require('@loot/shared');
 const { runCorrection } = require('../src/pipeline');
 
 // --- DEFAULT_MIN_CONFIDENCE ---

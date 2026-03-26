@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { runCorrection } = require('../src/pipeline');
-const { createRandomLrsInputs } = require('../src/benchmarkInputs');
+const { createRandomLrsInputs } = require('../lab/benchmarkInputs');
 
 const batch = createRandomLrsInputs(200);
 assert.equal(batch.length, 200);
