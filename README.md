@@ -1,401 +1,207 @@
-# FLOW
+# FLOW + SPIN + SMASH
 
-Deterministic text repair engine with grammar-aware analysis, benchmark tooling, and a native Windows tray shell.
+Monorepo for three deterministic writing tools with a shared linguistic engine.
 
-FLOW started as a bounded orthographic normalizer.  
-It is now broader than that: the repository contains the correction pipeline itself, grammar/context analysis components, a lab-oriented evaluation layer, and a Windows-native real-time wrapper.
-
-The core principle has not changed:
-
-- deterministic over “smart”
-- bounded repair over opaque rewriting
-- inspectable behavior over black-box magic
-- measurable quality over vibes
-
----
-
-## What FLOW is
-
-FLOW is currently a combination of four connected layers:
-
-1. **Repair Engine**  
-   Rule-based normalization and correction.
-
-2. **Grammar / Context Layer**  
-   Clause detection, contextual window rules, confidence filtering, and grammar-oriented rule handling.
-
-3. **Lab / Benchmark Layer**  
-   Benchmark inputs, run state, suite views, promotion flow, and test-driven evaluation.
-
-4. **Native Windows Shell**  
-   A WinForms tray application that connects the engine to real-time desktop usage.
-
-This repository is therefore **not just a spellchecker** and **not just a desktop wrapper**.  
-It is an evolving correction system with its own evaluation surface.
-
----
-
-## Scope
-
-FLOW is designed for **bounded text repair**, not for unrestricted rewriting.
-
-### In scope
-
-- orthographic normalization
-- phoneme–grapheme correction
-- morphology-aware repair
-- punctuation / surface cleanup
-- grammar-aware analysis and rule support
-- deterministic pipeline execution
-- benchmarkable output quality
-- real-time Windows usage through a tray app
-
-### Out of scope
-
-- generative paraphrasing
-- stylistic ghostwriting
-- “AI improvement” without traceability
-- freeform semantic rewriting
-- hidden tone changes presented as correction
-
----
-
-## Repository structure
-
-```text
-assets/                     Splash screens, tray icons, startup sound
-docs/                       Protocol, comparison, review and process docs
-src/                        Engine, grammar/context logic, lab UI/state
-test/                       Unit, rule, batch, grammar, lab and integration tests
-
-FLOW_Normalizer.cs          Native Windows tray app
-FlowNormalizer.csproj       .NET project
-build.bat                   Windows build script
-build.sh                    Cross-platform publish helper
-package.json                Node scripts and test entrypoints
-````
-
-### Notable source files
-
-```text
-src/
-  AppShell.js
-  LabConsolePage.js
-  PromoteWizard.js
-  SuiteRunsPage.js
-  benchmarkInputs.js
-  clauseDetector.js
-  confidenceFilter.js
-  contextWindowRules.js
-  flowRulesStore.js
-  labState.js
-  loom_cli.js
-  phoneticSimilarity.js
-  pipeline.js
-  ruleEngine.js
-  rules.en.js
-  rules.gr.js
-  rules.mo.js
-  rules.pg.js
-  rules.punct.js
-  rules.sl.js
-  rules.sn.js
-  uiBinding.js
+```
+FLOW   repairs text         (orthographic normalization, grammar rules)
+SPIN   diagnoses structure  (sentence chunks, drag & drop, 6 diagnostic states)
+SMASH  breaks blockades     (micro-interventions for writer's block)
 ```
 
+All tools share a common principle: **deterministic over "smart"**, **inspectable over black-box**, **no hidden semantic changes**.
+
 ---
 
-## Conceptual architecture
+## Architecture
 
-```text
-Windows Native Layer (C#)
-        │
-        ▼
-CLI Wrapper (loom_cli.js)
-        │
-        ▼
-Pipeline (pipeline.js)
-        │
-        ├── Rule Engine
-        │     ├── SN
-        │     ├── SL
-        │     ├── MO
-        │     ├── PG
-        │     └── punctuation / surface cleanup
-        │
-        ├── Grammar / Context Layer
-        │     ├── clause detection
-        │     ├── grammar rules
-        │     ├── context window rules
-        │     └── confidence filtering
-        │
-        └── Lab / Evaluation Layer
-              ├── benchmark inputs
-              ├── suite runs
-              ├── console / review
-              └── promotion workflow
+```
+                    @loot/shared
+              ┌──────────┴──────────┐
+              │  clauseDetector     │
+              │  confidenceFilter   │
+              │  phoneticSimilarity │
+              │  contextWindowRules │
+              │  rules.gr           │
+              └──────────┬──────────┘
+                    CJS + ESM
+                 ┌────┼────┐
+                 │    │    │
+           @loot/flow │  @loot/spin
+                      │
+                @loot/smash
 ```
 
----
-
-## Pipeline
-
-The original core pipeline remains central:
-
-`SN → SL → MO → PG`
-
-Where useful, that bounded chain is now supported by adjacent analysis components rather than treated as an isolated spelling-only pass.
-
-### Layer overview
-
-* **SN** — syntactic / surface normalization
-* **SL** — syllabic / letter-pattern normalization
-* **MO** — morphological normalization
-* **PG** — phoneme–grapheme correction
-* **GR / Context support** — clause-aware and window-based rule handling where the pipeline needs more than token-local repair
-
----
-
-## Why FLOW exists
-
-Many text tools fail in one of two ways:
-
-* they are too weak to repair noisy real-world input
-* or they are too “smart” and silently rewrite meaning, tone, or structure
-
-FLOW exists to stay bounded while still being useful.
-
-It aims to answer a stricter question:
-
-> Can text repair be strong, reproducible, inspectable, and benchmarkable without collapsing into black-box rewriting?
+| Package | Description | Type |
+|---------|-------------|------|
+| `packages/shared` | Shared linguistic engine (clause detection, phonetics, grammar, confidence filtering) | CJS + ESM |
+| `packages/flow` | Deterministic text repair pipeline (SN → SL → MO → PG → GR) + Lab + Windows tray app | CJS |
+| `packages/spin` | Sentence structure diagnosis, chunk analysis, narrative graph | ESM |
+| `packages/smash` | Writer's block micro-interventions (prototype) | standalone |
 
 ---
 
 ## Quick start
 
-### CLI normalization
-
 ```bash
-node src/loom_cli.js "ich hab das gestern gelsen"
+# Install all workspaces
+npm install
+
+# Run all tests
+npm test
+
+# FLOW: normalize text
+node packages/flow/src/loom_cli.js "ich hab das gestern gelsen"
+# → Ich habe das gestern gelesen
+
+# FLOW: English mode
+node packages/flow/src/loom_cli.js --lang en "i definately dont know"
+
+# Root shim (backwards compatible with native Windows app)
+node loom_cli.js "ich hab zeit"
 ```
 
-### English mode
-
-```bash
-node src/loom_cli.js --lang en "i definately dont know"
-```
-
-### Learn an exception
-
-```bash
-node src/loom_cli.js --learn-exception "teh" "the"
-```
+**Requirements:** Node.js 18+
 
 ---
 
-## Installation
+## Repository structure
 
-### Node.js layer
-
-Requirements:
-
-* Node.js 18+
-
-Install dependencies:
-
-```bash
-npm install
 ```
+package.json                     Workspace root (npm workspaces)
+loom_cli.js                      Root shim for C# app compatibility
 
-### Native Windows layer
+packages/
+  shared/                        @loot/shared — Shared Linguistic Engine
+    src/
+      clauseDetector.js           Sentence/clause topology analysis
+      confidenceFilter.js         Confidence-threshold filtering (CG-inspired)
+      phoneticSimilarity.js       Cologne Phonetics (Koelner Phonetik)
+      contextWindowRules.js       Multi-token context rules
+      rules.gr.js                 German grammar normalization rules
+      index.js                    CJS barrel export
+    index.mjs                     ESM wrapper
+    test/                         Standalone tests
 
-Requirements:
+  flow/                           @loot/flow — Text Repair Engine
+    src/                          Pipeline, rule engine, rules, CLI, store
+    lab/                          Lab state, benchmark, evaluation UI
+    native/                       FLOW_Normalizer.cs, build scripts
+    test/                         10 test suites
+    assets/                       Splash screens, tray icons, sound
 
-* .NET 8 SDK
-* Node.js 18+ in `PATH`
+  spin/                           @loot/spin — Sentence Diagnosis
+    src/                          Diagnosis, config, UI, earcons, nodes, phonotactics
+    index.html                    Browser entry point (Tailwind + SortableJS)
+
+  smash/                          @loot/smash — Blockade Breaker
+    src/                          Prototype (placeholder)
+
+docs/                             Shared documentation
+```
 
 ---
 
 ## Tests
 
-FLOW already includes more than a single “does normalization run” check.
-
-### Full suite
-
 ```bash
+# All workspaces
 npm test
-```
 
-### Focused runs
+# Individual packages
+npm run test:shared
+npm run test:flow
+npm run test:spin
 
-```bash
-npm run test:unit
-npm run test:rules
-npm run test:lab
-npm run test:batch
-npm run debug:rules
-```
-
-### What is covered
-
-The current scripts indicate coverage for:
-
-* normalization behavior
-* UI integration
-* learned rule handling
-* grammar rules
-* phonetic similarity
-* confidence filtering
-* rule debugging
-* randomized LRS-style batch testing
-* lab integration
-
-This matters because FLOW is not meant to be judged by anecdotal examples alone.
-
----
-
-## Benchmark and lab layer
-
-A major part of this repository is the shift from “tool that edits text” to “system whose behavior can be evaluated”.
-
-The lab-facing files in `src/` show that FLOW now includes an internal evaluation surface:
-
-* benchmark input handling
-* suite run management
-* lab console views
-* promotion workflow
-* run-state handling
-
-This turns FLOW into more than an autocorrect engine.
-It becomes a correction system with an explicit quality loop.
-
-### Practical implication
-
-Changes should ideally not be justified by:
-
-* “sounds better”
-* “looks smarter”
-* “the model liked it”
-
-They should be justified by:
-
-* lower damage
-* better retention of valid text
-* stronger handling of noisy text
-* cleaner boundary behavior
-* better benchmark outcomes
-
----
-
-## Native Windows app
-
-`FLOW_Normalizer.cs` is the Windows tray shell around the Node-based engine.
-
-It is intended for real-time usage and diagnostics rather than just offline CLI calls.
-
-### Build
-
-#### Debug
-
-```bash
-dotnet build FlowNormalizer.csproj
-```
-
-#### Release
-
-```bash
-dotnet build FlowNormalizer.csproj -c Release
-```
-
-#### Self-contained single-file EXE
-
-```bash
-dotnet publish FlowNormalizer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
-```
-
-### Build helpers
-
-```bash
-build.bat
-build.bat publish
-./build.sh publish
+# FLOW focused runs
+npm test -w packages/flow -- test:unit
+npm test -w packages/flow -- test:rules
+npm test -w packages/flow -- test:lab
+npm test -w packages/flow -- test:batch
 ```
 
 ---
 
-## Troubleshooting
+## Shared Engine (@loot/shared)
 
-* Check the tray balloon on startup
-* Open **Status anzeigen**
-* Run **Diagnose erneut prüfen**
-* Inspect `flow_startup.log`
-* Verify `node -v`
-* Verify `loom_cli.js` and `pipeline.js` are available where expected
-* Run a manual CLI sanity test:
+The shared engine provides linguistic primitives consumed by both FLOW and SPIN:
 
-```bash
-node src/loom_cli.js "ich hab zeit"
-```
+| Module | Purpose | Key exports |
+|--------|---------|-------------|
+| clauseDetector | Sentence/clause structure analysis | `detectClauses`, `splitSentences`, `SUBORDINATING_DE/EN` |
+| confidenceFilter | CG-inspired rule filtering | `filterByConfidence`, `errorProfile` |
+| phoneticSimilarity | Cologne Phonetics (Postel 1969) | `koelnerPhonetik`, `phoneticallyEqual`, `findPhoneticMatch` |
+| contextWindowRules | Multi-token rules (2-5 words) | `contextWindowRules` array |
+| rules.gr | German grammar rules | `GR_RULES` array |
 
----
-
-## Language support
-
-| Setting         | Description                        |
-| --------------- | ---------------------------------- |
-| Default         | German (`de`)                      |
-| ENV             | `FLOW_LANGUAGE=en`                 |
-| CLI             | `--lang en`                        |
-| Hotkey          | `Ctrl+Alt+Space` toggles `DE ↔ EN` |
-| Optional preset | `--en-preset en-prose-plus`        |
-
-Learned exceptions are stored per language in `flow_rules.json`.
+**Dual export:** `require('@loot/shared')` (CJS) and `import from '@loot/shared'` (ESM).
 
 ---
 
-## Docs
+## FLOW — Text Repair
 
-The `docs/` folder contains process and comparison material, including:
+Deterministic orthographic normalization with a multi-stage pipeline:
 
-* evolution protocol
-* comparison notes
-* external review notes
-* PR body / process material
-* unusual approaches
+**SN** (syntactic) → **SL** (syllabic) → **MO** (morphological) → **PG** (phoneme-grapheme) → **GR** (grammar)
 
-That means the repo does not just contain code.
-It also carries part of its own reasoning and development record.
+Plus: punctuation cleanup, context window rules, confidence filtering, learned exceptions.
+
+Includes a Windows tray app (`FLOW_Normalizer.cs`) for real-time system-wide correction.
+
+See [`packages/flow/README.md`](packages/flow/README.md) for full documentation.
 
 ---
 
-## Current status
+## SPIN — Sentence Diagnosis
 
-FLOW is best described as an **active engine repo** with four live concerns:
+Diagnostic writing instrument with 6 structural diagnostic states:
 
-* correction
-* grammar/context analysis
-* benchmarking / lab evaluation
-* native desktop delivery
+`stabil` · `mehrkernig` · `konfliktaer` · `formal_stabil_semantisch_leer` · `normativ_selbstannullierend` · `performativ_instabil`
 
-It is already operational, but clearly still evolving.
+Features: chunk-based sentence decomposition, drag & drop reordering, DOGMA rules (structural resistance), earcon audio feedback, narrative node graph, phonotactic analysis.
 
-The important thing is that the repo should no longer be described as **only** an orthographic normalizer.
-That origin still matters, but it is no longer the whole truth.
+---
+
+## SMASH — Blockade Breaker
+
+Targeted micro-interventions for writer's block. Not a text editor, not a writing course — a tool that converts "stillness" into "movement" through brief, low-friction interactions.
+
+Currently in prototype phase.
+
+---
+
+## Ecosystem
+
+| Tool | Layer | Function | Status |
+|------|-------|----------|--------|
+| FLOW | Repair | Bounded text normalization | Active |
+| SPIN | Diagnosis | Sentence structure analysis | Active |
+| SMASH | Unblocking | Micro-interventions | Prototype |
+| Shared | Engine | Linguistic primitives | Active |
 
 ---
 
 ## Design principles
 
-* deterministic where possible
-* bounded instead of overreaching
-* explicit quality loops
-* inspectable internals
-* no fake smartness
-* repair first, hallucination never
+- deterministic over "smart"
+- bounded repair over opaque rewriting
+- inspectable behavior over black-box magic
+- measurable quality over vibes
+- no hidden semantic changes
+- diagnosis before generation
+- resistance as signal
+- user remains author
+
+---
+
+## Language support
+
+| Language | FLOW | SPIN |
+|----------|------|------|
+| German (de) | Full pipeline (default) | Full diagnosis (default) |
+| English (en) | Conservative exceptions + presets | Clause detection |
 
 ---
 
 ## License
 
 Currently `UNLICENSED`.
-
