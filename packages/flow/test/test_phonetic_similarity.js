@@ -5,7 +5,7 @@ const {
   kölnerPhonetik,
   phoneticallyEqual,
   findPhoneticMatch,
-} = require('../src/phoneticSimilarity');
+} = require('@loot/shared');
 
 // --- kölnerPhonetik: Basisfälle ---
 

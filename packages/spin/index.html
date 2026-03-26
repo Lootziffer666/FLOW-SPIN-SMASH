@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>SPIN | Diagnostisches Schreibinstrument</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap');
+ body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; color: #1a1a1a; }
+ .chunk { cursor: grab; background: white; border: 1px solid #e5e7eb; transition: all 0.2s; }
+ .chunk:active { cursor: grabbing; }
+ .sortable-ghost { opacity: 0.3; background: #f3f4f6; }
+ .mono { font-family: 'JetBrains Mono', monospace; }
+ .diagnosis-stabil { border-color: #22c55e; color: #22c55e; }
+ .diagnosis-mehrkernig { border-color: #f59e0b; color: #f59e0b; }
+ .diagnosis-performativ_instabil { border-color: #a855f7; color: #a855f7; }
+ .diagnosis-normativ_selbstannullierend { border-color: #ef4444; color: #ef4444; }
+ .diagnosis-konfliktaer { border-color: #dc2626; color: #dc2626; }
+ .diagnosis-formal_stabil_semantisch_leer { border-color: #64748b; color: #64748b; }
+ .diagnosis-nicht_renderbar { border-color: #1e293b; color: #1e293b; }
+ </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-8 md:p-24">
+ <header class="w-full max-w-3xl mb-16">
+ <h1 class="text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">SPIN v0.5</h1>
+ <p class="text-sm text-gray-500 italic">Diagnose durch Widerstand. Infrastruktur für komplexes Denken.</p>
+ </header>
+ <main class="w-full max-w-3xl space-y-12">
+ <section id="input-section">
+ <input type="text" id="sentence-input"
+ class="w-full text-xl bg-transparent border-b border-gray-200 focus:border-black outline-none pb-2 transition-colors"
+ placeholder="Satz eingeben und mit Enter zerlegen...">
+ <p id="clause-info" class="hidden mt-2 text-xs text-gray-400 font-mono"></p>
+ </section>
+ <section id="workbench" class="hidden space-y-8">
+ <div id="chunk-container" class="flex flex-wrap gap-3 p-6 bg-gray-50 rounded-sm border border-dashed border-gray-200 min-h-[100px]"></div>
+ <button id="render-btn" class="px-6 py-2 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors">
+ Neu linearisieren
+ </button>
+ </section>
+ <section id="output-area" class="hidden pt-8 border-t border-gray-100 space-y-6">
+ <div>
+ <span class="text-xs uppercase text-gray-400">Rekonstruktion</span>
+ <p id="rendered-sentence" class="text-xl leading-relaxed mt-2"></p>
+ </div>
+ <div id="diagnosis-tag" class="inline-block px-3 py-1 text-xs font-mono uppercase tracking-wider border rounded-full"></div>
+ <ul id="diagnosis-notes" class="text-sm text-gray-600 space-y-1 list-disc list-inside"></ul>
+ </section>
+ </main>
+ <script type="module">
+ import { initSpin } from './src/ui.js';
+ initSpin();
+ </script>
+</body>
+</html>

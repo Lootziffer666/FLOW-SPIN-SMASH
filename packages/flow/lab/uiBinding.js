@@ -1,4 +1,4 @@
-const { runCorrection } = require('./pipeline');
+const { runCorrection } = require('../src/pipeline');
 
 // Minimal UI-Verdrahtung: Input-Text -> runCorrection -> aktualisierter UI-Text.
 function applyNormalizationToUi(inputText, setText, setStatus) {

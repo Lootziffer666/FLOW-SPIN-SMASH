@@ -1,0 +1,8 @@
+{
+  "name": "@loot/smash",
+  "version": "0.1.0",
+  "description": "SMASH — Schreibblockaden-Brecher. Gezielte Mikro-Interventionen statt Textgenerierung.",
+  "scripts": {},
+  "license": "UNLICENSED",
+  "private": true
+}

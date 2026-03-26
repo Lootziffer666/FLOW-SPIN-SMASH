@@ -1,0 +1,29 @@
+{
+  "name": "@loot/shared",
+  "version": "0.1.0",
+  "description": "Shared linguistic engine — clause detection, phonetics, grammar rules, confidence filtering",
+  "main": "src/index.js",
+  "module": "index.mjs",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./src/index.js"
+    }
+  },
+  "scripts": {
+    "test": "node test/test_shared.js"
+  },
+  "keywords": [
+    "clause-detection",
+    "phonetics",
+    "grammar",
+    "german",
+    "english",
+    "shared-engine"
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
