@@ -7,12 +7,14 @@ const PG_RULES = require('./rules.pg');
 const EN_RULES = require('./rules.en');
 const { getPunctRules } = require('./rules.punct');
 
-// Shared engine (@loot/shared)
+// LOOM engine (@loot/loom) — superset of shared
 const {
   GR_RULES,
   contextWindowRules: CONTEXT_RULES,
   detectClauses,
-} = require('@loot/shared');
+  diagnoseText,
+  flowSignals,
+} = require('@loot/loom');
 
 // LOOM structural signals — used to modulate context-rule confidence
 const { diagnoseText, flowSignals } = require('@loot/loom');
@@ -173,6 +175,7 @@ function buildEnglishPresetContextRules(options = {}) {
  */
 function buildContextRules(lang, options = {}, loomSignals = null) {
   const langValue = String(lang || 'de').toLowerCase();
+  const minConf = confidenceThresholdFor(options.confidenceHint);
 
   // Minimum confidence for context rules; raised when LOOM signals low confidence
   let minConfidence = 0;
@@ -190,7 +193,7 @@ function buildContextRules(lang, options = {}, loomSignals = null) {
   if (langValue !== 'en') return baseContext;
 
   const enPresetContext = buildEnglishPresetContextRules(options);
-  return [...baseContext, ...enPresetContext];
+  return [...baseContext, ...enPresetContext.filter((rule) => (rule.confidence ?? 1.0) >= minConf)];
 }
 
 function runMultiTokenNormalization(text, langOrOptions = 'de', maybeOptions = {}) {
@@ -219,6 +222,19 @@ function runMultiTokenNormalization(text, langOrOptions = 'de', maybeOptions = {
   tokenize(source).forEach((token) => {
     isProtected(token);
   });
+
+  // Compute LOOM structural signals for confidence-gated context rules.
+  let loomDiag = null;
+  let loomSig = null;
+  try {
+    loomDiag = diagnoseText(source, normalizedLang);
+    loomSig = flowSignals(loomDiag, normalizedLang);
+  } catch (_) {
+    // LOOM signals are best-effort; never block normalization.
+  }
+  const enrichedOptions = loomSig
+    ? { ...options, confidenceHint: loomSig.confidenceHint }
+    : options;
 
   if (normalizedLang === 'de') {
     const punct = applyRulesToUnprotectedText(source, getPunctRules('de'));
