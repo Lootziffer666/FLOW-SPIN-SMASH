@@ -1,0 +1,11 @@
+{
+  "status": "executed",
+  "cases": 80,
+  "passed": 80,
+  "failed": 0,
+  "pass_rate": "100.00%",
+  "failure_buckets": {
+    "mismatch": 0
+  },
+  "failures": []
+}
