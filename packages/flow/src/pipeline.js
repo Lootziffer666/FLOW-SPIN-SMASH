@@ -8,7 +8,8 @@ const {
   addContextRule,
   normalizeLanguage,
 } = require('./flowRulesStore');
-const { errorProfile } = require('@loot/shared');
+const { errorProfile } = require('@loot/loom');
+const { getLexiconFallback } = require('./lexiconFallback');
 
 const EMPTY_RULE_HITS = Object.freeze({
   EN: 0,
@@ -97,10 +98,17 @@ function runCorrection(text, langOrOptions) {
     enPreset: resolveEnPreset(options),
   });
 
+  const unchanged = String(normalized.corrected || '').trim().toLowerCase() === source.trim().toLowerCase();
+  const lexiconFallback = unchanged && language === 'de' ? getLexiconFallback(source) : null;
+
   return {
-    corrected: normalized.corrected,
+    corrected: lexiconFallback || normalized.corrected,
     rule_hits: normalized.rule_hits || { ...EMPTY_RULE_HITS },
-    applied_learning: null,
+    scope: normalized.scope || 'normalization',
+    applied_stages: lexiconFallback
+      ? [...(normalized.applied_stages || []), 'LEXICON']
+      : (normalized.applied_stages || []),
+    applied_learning: lexiconFallback ? 'lexicon' : null,
     language,
     lang: language,
   };
