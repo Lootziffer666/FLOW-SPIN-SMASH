@@ -60,6 +60,17 @@ SMASH ist damit keine Konkurrenz zu SPIN, sondern eine Rückführungs- und Entla
 4. **Signalschnittstellen (perspektivisch)**
    Nutzung von LOOM-/SPIN-Signalen zur präziseren Interventionswahl.
 
+### Aktueller technischer Stand der Signalschnittstelle
+
+In `src/signalBridge.js` ist ein minimaler LOOM→SMASH-Vertrag umgesetzt:
+
+- `state_hint`
+- `blockage_hint`
+- optional `text_ref`
+
+Die Bridge routet Signale in eine `smash-intake` Queue und protokolliert append-only.
+Sie trifft **keine** Interventionsentscheidung selbst.
+
 ---
 
 ## In Scope

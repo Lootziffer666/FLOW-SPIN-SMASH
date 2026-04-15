@@ -19,7 +19,11 @@ Mit minimalen, risikoarmen Schritten vom aktuellen Zustand zu einer konsistenten
   - Diagnose trennt Signalquellen explizit in `signal_source.loom` und `signal_source.spin`
   - Mehrkernigkeitsdiagnose nutzt LOOM-Clause-Signal statt lokaler Konjunktionslisten
   - UI zeigt Signalherkunft transparent an
-- ⏭️ **Nächster Schritt:** Phase 4 (SMASH Signal-Bridge)
+- ✅ **Phase 4 umgesetzt (SMASH Signal-Bridge):**
+  - minimalen Signalvertrag LOOM → SMASH eingeführt (`state_hint`, `blockage_hint`, `text_ref`)
+  - Routing auf `smash-intake` mit append-only Log umgesetzt
+  - gezielte Tests für Signal-Normalisierung und Routing ergänzt
+- ⏭️ **Nächster Schritt:** Phase 5 (Governance/Quality Gates)
 
 ## Phase 1 — Architektur-Naming stabilisieren (1 PR)
 
