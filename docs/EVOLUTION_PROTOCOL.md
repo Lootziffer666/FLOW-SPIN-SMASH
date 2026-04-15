@@ -132,3 +132,30 @@ npm run gate:phase5
 Die technische Umsetzung liegt in:
 
 - `scripts/phase5_quality_gate.js`
+
+---
+
+# Phase 6 — Benchmark-Hardening auf Datensatzebene
+
+Zusätzlich zum Merge-Gate wird die Benchmark-Suite selbst als unveränderliche Referenz gehasht.
+
+## Pflichtchecks
+
+```bash
+npm run bench:manifest
+npm run gate:phase6
+```
+
+## Regeln
+
+1. Alle Pattern-Dateien unter `database/artifacts/test_patterns_flow_spin/` werden deterministisch gehasht.
+2. Die Bundle-Datei `test_patterns_flow_spin_bundle.md` muss alle Pattern-Dateinamen referenzieren.
+3. Die Datei `database/artifacts/benchmark_suite_manifest.json` ist die Referenz für:
+   - `files[].sha256`
+   - `bundle_sha256`
+   - `suite_hash`
+4. Bei Drift schlägt der Check fehl; Update nur bewusst via:
+
+```bash
+node scripts/phase6_benchmark_hardening.js --write
+```

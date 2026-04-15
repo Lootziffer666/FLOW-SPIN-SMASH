@@ -27,7 +27,11 @@ Mit minimalen, risikoarmen Schritten vom aktuellen Zustand zu einer konsistenten
   - ausführbarer Merge-Gate via `npm run gate:phase5` eingeführt
   - Gate deckt functional, determinism, regression, snapshot und audit append-only ab
   - EVOLUTION_PROTOCOL um operative Merge-Regel ergänzt
-- ⏭️ **Nächster Schritt:** fortlaufendes Benchmark-Hardening auf Datensatzebene
+- ✅ **Phase 6 umgesetzt (Benchmark-Hardening Datensatz):**
+  - deterministisches Benchmark-Suite-Manifest eingeführt
+  - Hash-Check für Pattern-Dateien + Bundle-Referenzierung ergänzt
+  - kombinierter Gate-Lauf via `npm run gate:phase6` verfügbar
+- ⏭️ **Nächster Schritt:** kontinuierliche Erweiterung der Benchmark-Segmente (core/regression/stress/edge)
 
 ## Phase 1 — Architektur-Naming stabilisieren (1 PR)
 
