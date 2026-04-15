@@ -1,0 +1,432 @@
+{
+  "dataset_dir": "database/datasets/robustness/flow_longtexts",
+  "tested_files": 20,
+  "changed_files": 20,
+  "deterministic_files": 20,
+  "deterministic_rate": 100,
+  "average_run_ms": 7.88,
+  "max_run_ms": 16.48,
+  "failures": [],
+  "results": [
+    {
+      "file": "database/datasets/robustness/flow_longtexts/01_stadtbibliothek_und_digitaler_wandel.md",
+      "input_words": 3357,
+      "corrected_words": 3357,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 16.48,
+      "rerun_ms": 17.73,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/02_klima_resiliente_nachbarschaft.md",
+      "input_words": 3454,
+      "corrected_words": 3454,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.9,
+      "rerun_ms": 6.82,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/03_berufswechsel_mit_40_plus.md",
+      "input_words": 3406,
+      "corrected_words": 3406,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 9.11,
+      "rerun_ms": 12.72,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/04_gesundheit_im_schichtdienst.md",
+      "input_words": 3453,
+      "corrected_words": 3453,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 11.77,
+      "rerun_ms": 7.69,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/05_landwirtschaft_und_bodenpflege.md",
+      "input_words": 3500,
+      "corrected_words": 3500,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 7.38,
+      "rerun_ms": 7.84,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/06_kommunale_mobilitaet_ohne_auto.md",
+      "input_words": 3402,
+      "corrected_words": 3402,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.92,
+      "rerun_ms": 6.89,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/07_schule_zwischen_analog_und_ki.md",
+      "input_words": 3452,
+      "corrected_words": 3452,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 9,
+      "run_ms": 7.76,
+      "rerun_ms": 6.77,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/08_pflegearbeit_und_wertschaetzung.md",
+      "input_words": 3448,
+      "corrected_words": 3448,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 5.95,
+      "rerun_ms": 12.96,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/09_lokaler_journalismus_im_umbruch.md",
+      "input_words": 3399,
+      "corrected_words": 3399,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 8.25,
+      "rerun_ms": 10.77,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/10_gruendung_im_handwerk.md",
+      "input_words": 3450,
+      "corrected_words": 3450,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 10.98,
+      "rerun_ms": 6.37,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/11_musiklernen_im_erwachsenenalter.md",
+      "input_words": 3451,
+      "corrected_words": 3451,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.57,
+      "rerun_ms": 6.46,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/12_datenethik_im_alltag.md",
+      "input_words": 3455,
+      "corrected_words": 3455,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 5.85,
+      "rerun_ms": 7.72,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/13_tourismus_und_ortsidentitaet.md",
+      "input_words": 3454,
+      "corrected_words": 3454,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 9.64,
+      "rerun_ms": 7.38,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/14_familienorganisation_mit_pflegeverantwortung.md",
+      "input_words": 3453,
+      "corrected_words": 3453,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.18,
+      "rerun_ms": 7.83,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/15_energiegenossenschaft_aufbauen.md",
+      "input_words": 3359,
+      "corrected_words": 3359,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6,
+      "rerun_ms": 7.03,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/16_vereinsarbeit_zwischen_generationen.md",
+      "input_words": 3450,
+      "corrected_words": 3450,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.64,
+      "rerun_ms": 6.77,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/17_kreative_projekte_nach_rueckschlaegen.md",
+      "input_words": 3497,
+      "corrected_words": 3497,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.04,
+      "rerun_ms": 6.34,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/18_sprachlernen_durch_community.md",
+      "input_words": 3449,
+      "corrected_words": 3449,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.39,
+      "rerun_ms": 6.17,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/19_psychische_gesundheit_im_homeoffice.md",
+      "input_words": 3495,
+      "corrected_words": 3495,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.58,
+      "rerun_ms": 6.45,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    },
+    {
+      "file": "database/datasets/robustness/flow_longtexts/20_zukunft_des_oeffentlichen_raums.md",
+      "input_words": 3500,
+      "corrected_words": 3500,
+      "changed": true,
+      "deterministic": true,
+      "rule_hits_total": 2,
+      "run_ms": 6.21,
+      "rerun_ms": 6.13,
+      "applied_stages": [
+        "PUNCT",
+        "CTX",
+        "SN",
+        "SL",
+        "MO",
+        "PG",
+        "GR"
+      ],
+      "scope": "normalization",
+      "applied_learning": null
+    }
+  ]
+}
