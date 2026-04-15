@@ -4,16 +4,25 @@
  * @loot/shared — Shared Linguistic Engine
  *
  * Gemeinsame Module fuer FLOW und SPIN:
- * - clauseDetector: Satz- und Teilsatz-Analyse (Satzstruktur-Topologie)
+ * - clauseDetector: Satz- und Teilsatz-Analyse — re-exportiert aus @loot/loom
  * - confidenceFilter: Confidence-Threshold-Filter (Constraint Grammar)
  * - phoneticSimilarity: Koelner Phonetik (Cologne Phonetics, Postel 1969)
  * - contextWindowRules: Multi-Token-Kontextregeln mit Konfidenzwerten
  * - rules.gr: Deutsche Grammatik-Normalisierungsregeln (LanguageTool-inspiriert)
  *
  * CJS-Einstiegspunkt (require). ESM-Wrapper: ../index.mjs
+ *
+ * Hinweis: clauseDetector ist jetzt kanonisch in @loot/loom.
+ * @loot/shared re-exportiert ihn zur Abwärtskompatibilität.
  */
 
-const clauseDetector = require('./clauseDetector');
+// clauseDetector lebt in @loot/loom (kanonisch). Fallback auf lokale Kopie.
+let clauseDetector;
+try {
+  clauseDetector = require('@loot/loom');
+} catch (_) {
+  clauseDetector = require('./clauseDetector');
+}
 const confidenceFilter = require('./confidenceFilter');
 const phoneticSimilarity = require('./phoneticSimilarity');
 const contextWindowRules = require('./contextWindowRules');
