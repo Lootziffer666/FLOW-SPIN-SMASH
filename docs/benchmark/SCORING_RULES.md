@@ -80,3 +80,22 @@ These buckets are descriptive only and cannot be the gating objective.
 3. Score private structure metrics second to expose graph/node health.
 4. Always run mandatory second-pass idempotence check.
 5. Keep hard cases as a separate stress-set, not a dominant main-score slice.
+
+## 10. CLI commands (repo-ready)
+
+Validate schema + semantic sanity:
+
+```bash
+python scripts/benchmark/validate_flow_benchmark.py \
+  --schema docs/benchmark/BENCHMARK_SCHEMA.json \
+  --items data/benchmark/flow_benchmark_items.sample.jsonl
+```
+
+Score predictions against benchmark items:
+
+```bash
+python scripts/benchmark/score_flow_benchmark.py \
+  --items data/benchmark/flow_benchmark_items.sample.jsonl \
+  --predictions data/benchmark/flow_benchmark_predictions.sample.jsonl \
+  --pretty
+```
