@@ -23,6 +23,9 @@ class ScoreFlowBenchmarkTests(unittest.TestCase):
                 "optional_edits": [],
                 "forbidden_edits": [],
                 "no_touch": False,
+                "category": "A",
+                "difficulty": 2,
+                "ambiguity_flag": False,
             },
             {
                 "id": "FLOW-D-0002",
@@ -33,6 +36,9 @@ class ScoreFlowBenchmarkTests(unittest.TestCase):
                 "optional_edits": [],
                 "forbidden_edits": [],
                 "no_touch": True,
+                "category": "D",
+                "difficulty": 3,
+                "ambiguity_flag": False,
             },
         ]
 
@@ -67,6 +73,9 @@ class ScoreFlowBenchmarkTests(unittest.TestCase):
         self.assertEqual(result["public_metrics"]["no_op_accuracy"], 1.0)
         self.assertEqual(result["private_metrics"]["idempotence"], 1.0)
         self.assertGreaterEqual(result["counts"]["tp"], 1)
+        self.assertIn("slices", result)
+        self.assertEqual(result["slices"]["per_category"]["A"]["items"], 1)
+        self.assertEqual(result["slices"]["per_category"]["D"]["items"], 1)
 
     def test_false_shift_rate_case_based(self) -> None:
         items = [
@@ -79,6 +88,9 @@ class ScoreFlowBenchmarkTests(unittest.TestCase):
                 "optional_edits": [],
                 "forbidden_edits": [{"reason": "style_normalization", "pattern": "Das war sehr gut."}],
                 "no_touch": True,
+                "category": "C",
+                "difficulty": 4,
+                "ambiguity_flag": True,
             }
         ]
         predictions = [
@@ -91,6 +103,8 @@ class ScoreFlowBenchmarkTests(unittest.TestCase):
 
         result = score.evaluate(items, predictions)
         self.assertEqual(result["private_metrics"]["false_shift_rate"], 1.0)
+        self.assertEqual(result["slices"]["ambiguity_slice"]["items"], 1)
+        self.assertEqual(result["slices"]["hard_case_slice"]["items"], 1)
 
 
 if __name__ == "__main__":

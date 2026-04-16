@@ -110,6 +110,7 @@ def evaluate(items: list[dict], predictions: list[dict]) -> dict:
     improved_graphs = 0
     unchanged_second_pass = 0
     total_cases = len(items)
+    row_stats: list[dict] = []
 
     for item in items:
         item_id = item["id"]
@@ -180,8 +181,70 @@ def evaluate(items: list[dict], predictions: list[dict]) -> dict:
         if second_pass_prediction == prediction:
             unchanged_second_pass += 1
 
+        row_stats.append(
+            {
+                "id": item_id,
+                "category": item.get("category", "unknown"),
+                "difficulty": int(item.get("difficulty", 0) or 0),
+                "ambiguity_flag": bool(item.get("ambiguity_flag", False)),
+                "no_touch": bool(item.get("no_touch", False)),
+                "tp": local_tp,
+                "fp": local_fp,
+                "fn": local_fn,
+                "pred_edits": len(pred_edits),
+                "sem": 1 if prediction in accepted_targets else 0,
+                "repairable": 1 if len(gold_req) > 0 else 0,
+                "repaired": 1 if (len(gold_req) > 0 and local_tp >= 1) else 0,
+                "shift": 1 if has_shift else 0,
+            }
+        )
+
     precision = metric_div(tp, tp + fp)
     recall = metric_div(tp, tp + fn)
+
+    def aggregate(subset: list[dict]) -> dict:
+        if not subset:
+            return {
+                "items": 0,
+                "edit_precision": 0.0,
+                "edit_recall": 0.0,
+                "f0_5": 0.0,
+                "no_op_accuracy": 0.0,
+                "overcorrection_rate": 0.0,
+                "sentence_exact_match": 0.0,
+                "repair_rate": 0.0,
+                "false_shift_rate": 0.0,
+            }
+        stp = sum(r["tp"] for r in subset)
+        sfp = sum(r["fp"] for r in subset)
+        sfn = sum(r["fn"] for r in subset)
+        sedits = sum(r["pred_edits"] for r in subset)
+        ssem = sum(r["sem"] for r in subset)
+        sno_touch = [r for r in subset if r["no_touch"]]
+        srepairable = [r for r in subset if r["repairable"]]
+        precision_s = metric_div(stp, stp + sfp)
+        recall_s = metric_div(stp, stp + sfn)
+        return {
+            "items": len(subset),
+            "edit_precision": precision_s,
+            "edit_recall": recall_s,
+            "f0_5": f05(precision_s, recall_s),
+            "no_op_accuracy": metric_div(sum(r["sem"] for r in sno_touch), len(sno_touch)),
+            "overcorrection_rate": metric_div(sfp, sedits),
+            "sentence_exact_match": metric_div(ssem, len(subset)),
+            "repair_rate": metric_div(sum(r["repaired"] for r in srepairable), len(srepairable)),
+            "false_shift_rate": metric_div(sum(r["shift"] for r in subset), len(subset)),
+        }
+
+    per_category = {
+        key: aggregate([r for r in row_stats if r["category"] == key]) for key in ["A", "B", "C", "D"]
+    }
+    per_difficulty = {
+        str(level): aggregate([r for r in row_stats if r["difficulty"] == level]) for level in [1, 2, 3, 4, 5]
+    }
+    ambiguity_slice = aggregate([r for r in row_stats if r["ambiguity_flag"]])
+    no_touch_slice = aggregate([r for r in row_stats if r["no_touch"]])
+    hard_case_slice = aggregate([r for r in row_stats if r["difficulty"] >= 4])
 
     out = {
         "public_metrics": {
@@ -216,6 +279,13 @@ def evaluate(items: list[dict], predictions: list[dict]) -> dict:
             "repairable_graphs": repairable_graphs,
             "improved_graphs": improved_graphs,
             "unchanged_second_pass": unchanged_second_pass,
+        },
+        "slices": {
+            "per_category": per_category,
+            "per_difficulty": per_difficulty,
+            "ambiguity_slice": ambiguity_slice,
+            "no_touch_slice": no_touch_slice,
+            "hard_case_slice": hard_case_slice,
         },
     }
     return out
