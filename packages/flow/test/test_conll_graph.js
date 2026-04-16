@@ -18,6 +18,9 @@ const graph = buildConllGraphFromText(sampleConllu, { windowSize: 2 });
 assert.ok(graph.nodes.length >= 4);
 assert.ok(graph.edges.some((edge) => edge.type === 'dependency' && edge.relation === 'nsubj'));
 assert.ok(graph.edges.some((edge) => edge.type === 'window_cooccurrence'));
+assert.equal(graph.relation_stage, 'post_conllu_parse_pre_grammar');
+assert.ok(graph.bond_integrity.raw_edge_count >= graph.bond_integrity.merged_edge_count);
+assert.ok(graph.edges.every((edge) => typeof edge.bond_id === 'string' && edge.bond_id.length > 0));
 
 const correction = runCorrection('ich gehe heute.', {
   language: 'de',
@@ -27,4 +30,5 @@ const correction = runCorrection('ich gehe heute.', {
 
 assert.ok(correction.conll_graph);
 assert.ok(correction.conll_graph.nodes.length >= 4);
+assert.equal(correction.conll_graph.relation_stage, 'post_conllu_parse_pre_grammar');
 console.log('CoNLL graph test passed.');

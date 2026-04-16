@@ -67,7 +67,7 @@ function buildNodeId(token) {
 function buildConllGraph(sentences, options = {}) {
   const windowSize = Math.max(1, Number(options.windowSize || 2));
   const nodeMap = new Map();
-  const edges = [];
+  const rawEdges = [];
 
   const ensureNode = (token) => {
     const nodeId = buildNodeId(token);
@@ -97,7 +97,7 @@ function buildConllGraph(sentences, options = {}) {
 
       if (token.head > 0 && byId.has(token.head)) {
         const headNodeId = ensureNode(byId.get(token.head));
-        edges.push({
+        rawEdges.push({
           source: nodeId,
           target: headNodeId,
           type: 'dependency',
@@ -113,7 +113,7 @@ function buildConllGraph(sentences, options = {}) {
       for (let j = i + 1; j < sentence.tokens.length && j <= i + windowSize; j += 1) {
         const right = sentence.tokens[j];
         const rightNodeId = ensureNode(right);
-        edges.push({
+        rawEdges.push({
           source: leftNodeId,
           target: rightNodeId,
           type: 'window_cooccurrence',
@@ -124,12 +124,41 @@ function buildConllGraph(sentences, options = {}) {
     }
   }
 
+  const mergedEdgeMap = new Map();
+  for (const edge of rawEdges) {
+    const bondId = `${edge.type}:${edge.relation}:${edge.source}->${edge.target}`;
+    if (!mergedEdgeMap.has(bondId)) {
+      mergedEdgeMap.set(bondId, {
+        bond_id: bondId,
+        source: edge.source,
+        target: edge.target,
+        type: edge.type,
+        relation: edge.relation,
+        weight: 0,
+        occurrences: 0,
+      });
+    }
+    const merged = mergedEdgeMap.get(bondId);
+    merged.weight += edge.weight;
+    merged.occurrences += 1;
+  }
+
+  const edges = [...mergedEdgeMap.values()].sort((a, b) => a.bond_id.localeCompare(b.bond_id));
+
   const nodes = [...nodeMap.values()].map((node) => ({
     ...node,
     forms: [...node.forms].sort(),
-  }));
+  })).sort((a, b) => a.id.localeCompare(b.id));
 
-  return { nodes, edges };
+  return {
+    nodes,
+    edges,
+    relation_stage: 'post_conllu_parse_pre_grammar',
+    bond_integrity: {
+      raw_edge_count: rawEdges.length,
+      merged_edge_count: edges.length,
+    },
+  };
 }
 
 function buildConllGraphFromText(conlluText, options = {}) {

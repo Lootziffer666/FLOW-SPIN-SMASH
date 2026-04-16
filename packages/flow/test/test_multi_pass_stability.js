@@ -36,6 +36,10 @@ for (const scenario of scenarios) {
     if (baseline.conll_graph) {
       assert.equal(run.conll_graph.nodes.length, baseline.conll_graph.nodes.length);
       assert.equal(run.conll_graph.edges.length, baseline.conll_graph.edges.length);
+      assert.deepEqual(
+        run.conll_graph.edges.map((edge) => edge.bond_id),
+        baseline.conll_graph.edges.map((edge) => edge.bond_id),
+      );
     }
   }
 }
