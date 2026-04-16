@@ -27,6 +27,26 @@ const checks = [
   { input: 'irgentwann später', expectContains: 'irgendwann später', label: 'MO irgentwann -> irgendwann' },
   { input: 'obwol ich', expectContains: 'obwohl ich', label: 'MO obwol -> obwohl' },
   { input: 'eigendlich nicht', expectContains: 'eigentlich nicht', label: 'MO eigendlich -> eigentlich' },
+
+  // PG new rules (benchmark-driven)
+  { input: 'Das ist ein Feler.', expectContains: 'Fehler', label: 'PG feler -> Fehler' },
+  { input: 'Wir faren morgen los.', expectContains: 'fahren', label: 'PG faren -> fahren' },
+  { input: 'Das ist interresant.', expectContains: 'interessant', label: 'PG interresant -> interessant' },
+  { input: 'ist gegangn', expectContains: 'gegangen', label: 'PG gegangn -> gegangen' },
+  { input: 'for der Tür', expectContains: 'vor der', label: 'PG for -> vor' },
+  { input: 'er hat gesakt', expectContains: 'gesagt', label: 'PG gesakt -> gesagt' },
+  { input: 'fergeßen haben', expectContains: 'vergessen', label: 'PG fergeßen -> vergessen' },
+  { input: 'anfangen zu kucken', expectContains: 'gucken', label: 'PG kucken -> gucken' },
+
+  // SN new rules (benchmark-driven)
+  { input: 'ich glaube das er', expectContains: 'glaube, dass er', label: 'SN glaube das -> glaube, dass' },
+  { input: 'nach hause gehen', expectContains: 'nach Hause', label: 'SN nach hause -> nach Hause' },
+  { input: 'Ihr seit pünktlich', expectContains: 'Ihr seid', label: 'SN Ihr seit -> Ihr seid' },
+
+  // MO new rules
+  { input: 'drausen spielen', expectContains: 'draußen', label: 'MO drausen -> draußen' },
+  { input: 'anderst als', expectContains: 'anders als', label: 'MO anderst -> anders' },
+  { input: 'wider da sein', expectContains: 'wieder da', label: 'MO wider -> wieder' },
 ];
 
 console.log('Debug rule checks');

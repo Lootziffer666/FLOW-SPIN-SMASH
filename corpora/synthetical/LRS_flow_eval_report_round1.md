@@ -14,26 +14,16 @@
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `gestan hab ich mein sport beutel in der shule fergeßen, obwohl mama noch gesakt hat das ich for der tür kucken soll.` |
-| FLOW output   | `Gestan habe ich mein sport beutel in der Schule vergessen, obwohl mama noch gesagt hat das ich vor der tür gucken soll.` |
+| FLOW output   | `Gestan habe ich mein sport beutel in der shule fergeßen, obwohl mama noch gesakt hat das ich for der tür kucken soll.` |
 | Gold (clean)  | `Gestern habe ich meinen Sportbeutel in der Schule vergessen, obwohl Mama noch gesagt hat, dass ich vor der Tür schauen soll.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**PG** (6 Regeln)
+**PG** (1 Regel)
 
-- `PG:/\bshule\b/` — \bshule\b
-  - Änderung: `shule`→`Schule`
 - `PG:/\bhab\b/` — \bhab\b
   - Änderung: `hab`→`habe`
-- `PG:/\bfor\b/` — \bfor\b
-  - Änderung: `for`→`vor`
-- `PG:/\bgesakt\b/` — \bgesakt\b
-  - Änderung: `gesakt`→`gesagt`
-- `PG:/\bferge(?:ß|s)en\b/` — \bferge(?:ß|s)en\b
-  - Änderung: `fergeßen,`→`vergessen,`
-- `PG:/\bkucken\b/` — \bkucken\b
-  - Änderung: `kucken`→`gucken`
 
 **POST** (1 Regel)
 
@@ -50,19 +40,19 @@ Token-Differenzen (FLOW→Gold):
 - `beutel`→`in`
 - `in`→`der`
 - `der`→`Schule`
-- `Schule`→`vergessen,`
-- `vergessen,`→`obwohl`
+- `shule`→`vergessen,`
+- `fergeßen,`→`obwohl`
 - `obwohl`→`Mama`
 - `mama`→`noch`
 - `noch`→`gesagt`
-- `gesagt`→`hat,`
+- `gesakt`→`hat,`
 - `hat`→`dass`
 - `das`→`ich`
 - `ich`→`vor`
-- `vor`→`der`
+- `for`→`der`
 - `der`→`Tür`
 - `tür`→`schauen`
-- `gucken`→`soll.`
+- `kucken`→`soll.`
 - `soll.`→`∅`
 
 **ZH1-Scope-Analyse:**
@@ -82,7 +72,7 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `weil es morgens so geregnet hatt, sind wir in der pause trozdem raus und danach wahren meine soken ganz kalt und matschig.` |
-| FLOW output   | `Weil es morgens so geregnet hat, sind wir in der pause trotzdem raus und danach wahren meine soken ganz kalt und matschig.` |
+| FLOW output   | `Weil es morgens so geregnet hatt, sind wir in der pause trotzdem raus und danach wahren meine soken ganz kalt und matschig.` |
 | Gold (clean)  | `Weil es morgens so geregnet hat, sind wir in der Pause trotzdem raus und danach waren meine Socken ganz kalt und matschig.` |
 | Übereinstimmung | ⚠️ partiell |
 
@@ -93,11 +83,6 @@ Token-Differenzen (FLOW→Gold):
 - `SL:/\btrozdem\b/` — \btrozdem\b
   - Änderung: `trozdem`→`trotzdem`
 
-**PG** (1 Regel)
-
-- `PG:/\bhatt\b/` — \bhatt\b
-  - Änderung: `hatt,`→`hat,`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
@@ -107,6 +92,7 @@ Token-Differenzen (FLOW→Gold):
 
 Token-Differenzen (FLOW→Gold):
 
+- `hatt,`→`hat,`
 - `pause`→`Pause`
 - `wahren`→`waren`
 - `soken`→`Socken`
@@ -128,30 +114,21 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich wolte meiner freundin das bild zeigen was ich gemalt hab aber dan ist ausversehen der saft drüber gekipt.` |
-| FLOW output   | `Ich wollte meiner freundin das bild zeigen was ich gemalt habe aber dann ist aus Versehen der saft drüber gekippt.` |
+| FLOW output   | `Ich wollte meiner freundin das bild zeigen was ich gemalt habe aber dan ist ausversehen der saft drüber gekipt.` |
 | Gold (clean)  | `Ich wollte meiner Freundin das Bild zeigen, das ich gemalt habe, aber dann ist aus Versehen der Saft darüber gekippt.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SN** (1 Regel)
-
-- `SN:/\bausversehen\b/` — \bausversehen\b
-  - Änderung: `ausversehen`→`aus`, `der`→`Versehen`, `saft`→`der`, `drüber`→`saft`, `gekipt.`→`drüber`, `∅`→`gekipt.`
-
-**SL** (2 Regeln)
+**SL** (1 Regel)
 
 - `SL:/\bwolte\b/` — \bwolte\b
   - Änderung: `wolte`→`wollte`
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
 
-**PG** (2 Regeln)
+**PG** (1 Regel)
 
 - `PG:/\bhab\b/` — \bhab\b
   - Änderung: `hab`→`habe`
-- `PG:/\bgekipt\b/` — \bgekipt\b
-  - Änderung: `gekipt.`→`gekippt.`
 
 **POST** (1 Regel)
 
@@ -167,8 +144,13 @@ Token-Differenzen (FLOW→Gold):
 - `zeigen`→`zeigen,`
 - `was`→`das`
 - `habe`→`habe,`
-- `saft`→`Saft`
-- `drüber`→`darüber`
+- `dan`→`dann`
+- `ausversehen`→`aus`
+- `der`→`Versehen`
+- `saft`→`der`
+- `drüber`→`Saft`
+- `gekipt.`→`darüber`
+- `∅`→`gekippt.`
 
 **ZH1-Scope-Analyse:**
 
@@ -188,16 +170,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `mein kleiner bruder hat so getan als ob er schläft, damit er nicht den müll mit runter nemen muss.` |
-| FLOW output   | `Mein kleiner bruder hat so getan als, ob er schläft, damit er nicht den müll mit runternehmen muss.` |
+| FLOW output   | `Mein kleiner bruder hat so getan als, ob er schläft, damit er nicht den müll mit runter nemen muss.` |
 | Gold (clean)  | `Mein kleiner Bruder hat so getan, als ob er schläft, damit er nicht den Müll mit runternehmen muss.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (1 Regel)
-
-- `SN:/\brunter nemen\b/` — \brunter nemen\b
-  - Änderung: `runter`→`runternehmen`, `nemen`→`muss.`, `muss.`→`∅`
 
 **GR** (1 Regel)
 
@@ -217,6 +194,9 @@ Token-Differenzen (FLOW→Gold):
 - `getan`→`getan,`
 - `als,`→`als`
 - `müll`→`Müll`
+- `runter`→`runternehmen`
+- `nemen`→`muss.`
+- `muss.`→`∅`
 
 **ZH1-Scope-Analyse:**
 
@@ -233,18 +213,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `im bus hab ich die ganze zeit gedacht das wir schon zu weit gefahren sind, weil die häuser irgentwie alle anderst aussahn.` |
-| FLOW output   | `Im bus habe ich die ganze zeit gedacht das wir schon zu weit gefahren sind, weil die häuser irgendwie alle anders aussahn.` |
+| FLOW output   | `Im bus habe ich die ganze zeit gedacht das wir schon zu weit gefahren sind, weil die häuser irgendwie alle anderst aussahn.` |
 | Gold (clean)  | `Im Bus habe ich die ganze Zeit gedacht, dass wir schon zu weit gefahren sind, weil die Häuser irgendwie alle anders aussahen.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**MO** (2 Regeln)
+**MO** (1 Regel)
 
 - `MO:/\birgentwie\b/` — \birgentwie\b
   - Änderung: `irgentwie`→`irgendwie`
-- `MO:/\banderst\b/` — \banderst\b
-  - Änderung: `anderst`→`anders`
 
 **PG** (1 Regel)
 
@@ -265,6 +243,7 @@ Token-Differenzen (FLOW→Gold):
 - `gedacht`→`gedacht,`
 - `das`→`dass`
 - `häuser`→`Häuser`
+- `anderst`→`anders`
 - `aussahn.`→`aussahen.`
 
 **ZH1-Scope-Analyse:**
@@ -284,30 +263,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `seid wir den neuen hund haben ist es abents nie mehr leise, weil er immer knurt wenn drausen einer vorbei leuft.` |
-| FLOW output   | `Seid wir den neuen hund haben ist es abends nie mehr leise, weil er immer knurrt, wenn draußen einer vorbei läuft.` |
+| FLOW output   | `Seid wir den neuen hund haben ist es abents nie mehr leise, weil er immer knurt, wenn drausen einer vorbei leuft.` |
 | Gold (clean)  | `Seit wir den neuen Hund haben, ist es abends nie mehr leise, weil er immer knurrt, wenn draußen einer vorbeiläuft.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**MO** (2 Regeln)
-
-- `MO:/\babents\b/` — \babents\b
-  - Änderung: `abents`→`abends`
-- `MO:/\bdrausen\b/` — \bdrausen\b
-  - Änderung: `drausen`→`draußen`
-
-**PG** (2 Regeln)
-
-- `PG:/\bknurt\b/` — \bknurt\b
-  - Änderung: `knurt`→`knurrt`
-- `PG:/\bleuft\b/` — \bleuft\b
-  - Änderung: `leuft.`→`läuft.`
-
 **GR** (1 Regel)
 
 - `de-gr-komma-nebensatz` — de-gr-komma-nebensatz
-  - Änderung: `knurrt`→`knurrt,`
+  - Änderung: `knurt`→`knurt,`
 
 **POST** (1 Regel)
 
@@ -321,8 +286,11 @@ Token-Differenzen (FLOW→Gold):
 - `Seid`→`Seit`
 - `hund`→`Hund`
 - `haben`→`haben,`
+- `abents`→`abends`
+- `knurt,`→`knurrt,`
+- `drausen`→`draußen`
 - `vorbei`→`vorbeiläuft.`
-- `läuft.`→`∅`
+- `leuft.`→`∅`
 
 **ZH1-Scope-Analyse:**
 
@@ -341,16 +309,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich habe die mathe aufgabe eigendlich verstanden gehabt, nur wo die zahlen mit komma kamen war aufeinmal alles fals gewesen.` |
-| FLOW output   | `Ich habe die mathe aufgabe eigentlich verstanden gehabt, nur wo die zahlen mit komma kamen war auf einmal alles fals gewesen.` |
+| FLOW output   | `Ich habe die mathe aufgabe eigentlich verstanden gehabt, nur wo die zahlen mit komma kamen war aufeinmal alles fals gewesen.` |
 | Gold (clean)  | `Ich hatte die Matheaufgabe eigentlich verstanden, nur als die Zahlen mit Komma kamen, war auf einmal alles falsch gewesen.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (1 Regel)
-
-- `SN:/\baufeinmal\b/` — \baufeinmal\b
-  - Änderung: `aufeinmal`→`auf`, `alles`→`einmal`, `fals`→`alles`, `gewesen.`→`fals`, `∅`→`gewesen.`
 
 **MO** (1 Regel)
 
@@ -380,10 +343,9 @@ Token-Differenzen (FLOW→Gold):
 - `komma`→`war`
 - `kamen`→`auf`
 - `war`→`einmal`
-- `auf`→`alles`
-- `einmal`→`falsch`
-- `alles`→`gewesen.`
-- `fals`→`∅`
+- `aufeinmal`→`alles`
+- `alles`→`falsch`
+- `fals`→`gewesen.`
 - `gewesen.`→`∅`
 
 **ZH1-Scope-Analyse:**
@@ -401,50 +363,45 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `wen papa schimpft rede ich manchma garnicht mehr, auch wen ich eigendlich nur helfen wolte.` |
-| FLOW output   | `Wenn papa schimpft rede ich manchmal gar nicht mehr, auch wenn ich eigentlich nur helfen wollte.` |
+| FLOW output   | `Wen papa schimpft rede ich manchma garnicht mehr, auch wen ich eigentlich nur helfen wollte.` |
 | Gold (clean)  | `Wenn Papa schimpft, rede ich manchmal gar nicht mehr, auch wenn ich eigentlich nur helfen wollte.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SN** (1 Regel)
-
-- `SN:/\bgarnicht\b/` — \bgarnicht\b
-  - Vorher: `wen papa schimpft rede ich manchma garnicht mehr, auch wen ich eigendlich nur helfen wolte.`
-  - Nachher: `wen papa schimpft rede ich manchma gar nicht mehr, auch wen ich eigendlich nur helfen wolte.`
-
-**SL** (3 Regeln)
+**SL** (1 Regel)
 
 - `SL:/\bwolte\b/` — \bwolte\b
   - Änderung: `wolte.`→`wollte.`
-- `SL:/\bmanchma\b/` — \bmanchma\b
-  - Änderung: `manchma`→`manchmal`
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`, `wen`→`wenn`
 
 **MO** (1 Regel)
 
 - `MO:/\beigendlich\b/` — \beigendlich\b
   - Änderung: `eigendlich`→`eigentlich`
 
-**GR** (2 Regeln)
-
-- `de-gr-komma-nebensatz` — de-gr-komma-nebensatz
-  - Änderung: `auch`→`auch,`
-- `de-gr-komma-nach-auch-undo` — de-gr-komma-nach-auch-undo
-  - Änderung: `auch,`→`auch`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `wenn`→`Wenn`
+  - Änderung: `wen`→`Wen`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Wen`→`Wenn`
 - `papa`→`Papa`
 - `schimpft`→`schimpft,`
+- `manchma`→`manchmal`
+- `garnicht`→`gar`
+- `mehr,`→`nicht`
+- `auch`→`mehr,`
+- `wen`→`auch`
+- `ich`→`wenn`
+- `eigentlich`→`ich`
+- `nur`→`eigentlich`
+- `helfen`→`nur`
+- `wollte.`→`helfen`
+- `∅`→`wollte.`
 
 **ZH1-Scope-Analyse:**
 
@@ -462,18 +419,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `am wochenende sollten wir frür zum see fahren, aber weil meine schwester so lange im bad gebraucht hatt sind wir erst los als es schon fast dunkler war.` |
-| FLOW output   | `Am wochenende sollten wir früher zum see fahren, aber weil meine schwester so lange im bad gebraucht hat sind wir erst los als es schon fast dunkler war.` |
+| FLOW output   | `Am wochenende sollten wir frür zum see fahren, aber weil meine schwester so lange im bad gebraucht hatt sind wir erst los als es schon fast dunkler war.` |
 | Gold (clean)  | `Am Wochenende sollten wir früher zum See fahren, aber weil meine Schwester so lange im Bad gebraucht hat, sind wir erst los, als es schon fast dunkel war.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**PG** (2 Regeln)
-
-- `PG:/\bhatt\b/` — \bhatt\b
-  - Änderung: `hatt`→`hat`
-- `PG:/\bfrür\b/` — \bfrür\b
-  - Änderung: `frür`→`früher`
 
 **GR** (2 Regeln)
 
@@ -492,10 +442,11 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `wochenende`→`Wochenende`
+- `frür`→`früher`
 - `see`→`See`
 - `schwester`→`Schwester`
 - `bad`→`Bad`
-- `hat`→`hat,`
+- `hatt`→`hat,`
 - `los`→`los,`
 - `dunkler`→`dunkel`
 
@@ -514,18 +465,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich mag es nicht wen alle lachen und ich nicht weis ob die vieleicht wegen mir meinen.` |
-| FLOW output   | `Ich mag es nicht, wenn alle lachen und ich nicht weiß, ob die vielleicht wegen mir meinen.` |
+| FLOW output   | `Ich mag es nicht wen alle lachen und ich nicht weiß, ob die vielleicht wegen mir meinen.` |
 | Gold (clean)  | `Ich mag es nicht, wenn alle lachen und ich nicht weiß, ob sie vielleicht mich meinen.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (2 Regeln)
+**SL** (1 Regel)
 
 - `SL:/\bvieleicht\b/` — \bvieleicht\b
   - Änderung: `vieleicht`→`vielleicht`
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
 
 **PG** (1 Regel)
 
@@ -535,7 +484,7 @@ Token-Differenzen (FLOW→Gold):
 **GR** (1 Regel)
 
 - `de-gr-komma-nebensatz` — de-gr-komma-nebensatz
-  - Änderung: `nicht`→`nicht,`, `weiß`→`weiß,`
+  - Änderung: `weiß`→`weiß,`
 
 **POST** (1 Regel)
 
@@ -546,6 +495,8 @@ Token-Differenzen (FLOW→Gold):
 
 Token-Differenzen (FLOW→Gold):
 
+- `nicht`→`nicht,`
+- `wen`→`wenn`
 - `die`→`sie`
 - `wegen`→`mich`
 - `mir`→`meinen.`
@@ -566,16 +517,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `unsere lehrerin hat gesagt das wir den aufsatz sauber schreiben sollen, aber mein radiergummi war weg und dann sah alles noch schlimer aus.` |
-| FLOW output   | `Unsere lehrerin hat gesagt, dass wir den aufsatz sauber schreiben sollen, aber mein radiergummi war weg und dann sah alles noch schlimer aus.` |
+| FLOW output   | `Unsere lehrerin hat gesagt das wir den aufsatz sauber schreiben sollen, aber mein radiergummi war weg und dann sah alles noch schlimer aus.` |
 | Gold (clean)  | `Unsere Lehrerin hat gesagt, dass wir den Aufsatz sauber schreiben sollen, aber mein Radiergummi war weg und dann sah alles noch schlimmer aus.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (1 Regel)
-
-- `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` — \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b
-  - Änderung: `gesagt`→`gesagt,`, `das`→`dass`
 
 **POST** (1 Regel)
 
@@ -587,6 +533,8 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `lehrerin`→`Lehrerin`
+- `gesagt`→`gesagt,`
+- `das`→`dass`
 - `aufsatz`→`Aufsatz`
 - `radiergummi`→`Radiergummi`
 - `schlimer`→`schlimmer`
@@ -650,7 +598,7 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `mein opa erzält immer die gleiche geschichte wider, aber ich hör trozdem zu weil er dann so komisch ernst kuckt.` |
-| FLOW output   | `Mein opa erzält immer die gleiche geschichte wieder, aber ich hör trotzdem zu, weil er dann so komisch ernst kuckt.` |
+| FLOW output   | `Mein opa erzält immer die gleiche geschichte wider, aber ich hör trotzdem zu, weil er dann so komisch ernst kuckt.` |
 | Gold (clean)  | `Mein Opa erzählt immer die gleiche Geschichte wieder, aber ich höre trotzdem zu, weil er dann so komisch ernst guckt.` |
 | Übereinstimmung | ⚠️ partiell |
 
@@ -660,11 +608,6 @@ Token-Differenzen (FLOW→Gold):
 
 - `SL:/\btrozdem\b/` — \btrozdem\b
   - Änderung: `trozdem`→`trotzdem`
-
-**MO** (1 Regel)
-
-- `MO:/\bwider\b/` — \bwider\b
-  - Änderung: `wider,`→`wieder,`
 
 **GR** (1 Regel)
 
@@ -683,6 +626,7 @@ Token-Differenzen (FLOW→Gold):
 - `opa`→`Opa`
 - `erzält`→`erzählt`
 - `geschichte`→`Geschichte`
+- `wider,`→`wieder,`
 - `hör`→`höre`
 - `kuckt.`→`guckt.`
 
@@ -700,16 +644,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `heute in musik muste ich alleine singen weil lena heiser wahr, und mein bauch hat die ganze zeit gezittert.` |
-| FLOW output   | `Heute in musik musste ich alleine singen, weil lena heiser wahr, und mein bauch hat die ganze zeit gezittert.` |
+| FLOW output   | `Heute in musik muste ich alleine singen, weil lena heiser wahr, und mein bauch hat die ganze zeit gezittert.` |
 | Gold (clean)  | `Heute in Musik musste ich alleine singen, weil Lena heiser war, und mein Bauch hat die ganze Zeit gezittert.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (1 Regel)
-
-- `SL:/\bmuste\b/` — \bmuste\b
-  - Änderung: `muste`→`musste`
 
 **GR** (1 Regel)
 
@@ -726,6 +665,7 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `musik`→`Musik`
+- `muste`→`musste`
 - `lena`→`Lena`
 - `wahr,`→`war,`
 - `bauch`→`Bauch`
@@ -747,18 +687,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `obwohl ich den hamster nur kurz auf den tepich setzen wolte, ist er sofort hinter den schrank verschwunden und wir musten ewig warten.` |
-| FLOW output   | `Obwohl ich den hamster nur kurz auf den tepich setzen wollte, ist er sofort hinter den schrank verschwunden und wir mussten ewig warten.` |
+| FLOW output   | `Obwohl ich den hamster nur kurz auf den tepich setzen wollte, ist er sofort hinter den schrank verschwunden und wir musten ewig warten.` |
 | Gold (clean)  | `Obwohl ich den Hamster nur kurz auf den Teppich setzen wollte, ist er sofort hinter dem Schrank verschwunden und wir mussten ewig warten.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (2 Regeln)
+**SL** (1 Regel)
 
 - `SL:/\bwolte\b/` — \bwolte\b
   - Änderung: `wolte,`→`wollte,`
-- `SL:/\bmusten\b/` — \bmusten\b
-  - Änderung: `musten`→`mussten`
 
 **POST** (1 Regel)
 
@@ -773,6 +711,7 @@ Token-Differenzen (FLOW→Gold):
 - `tepich`→`Teppich`
 - `den`→`dem`
 - `schrank`→`Schrank`
+- `musten`→`mussten`
 
 **ZH1-Scope-Analyse:**
 
@@ -790,23 +729,15 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich hab ausversehen die brotdose von jonas mitgenommen und erst zuhause gemerkt das da garkein käsebrot sondern gurken drin waren.` |
-| FLOW output   | `Ich habe aus Versehen die brotdose von jonas mitgenommen und erst zu Hause gemerkt, dass da gar kein käsebrot sondern gurken drin waren.` |
+| FLOW output   | `Ich habe ausversehen die brotdose von jonas mitgenommen und erst zuhause gemerkt, dass da garkein käsebrot sondern gurken drin waren.` |
 | Gold (clean)  | `Ich habe aus Versehen die Brotdose von Jonas mitgenommen und erst zu Hause gemerkt, dass da gar kein Käsebrot, sondern Gurken drin waren.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SN** (4 Regeln)
+**SN** (1 Regel)
 
-- `SN:/\bgarkein\b/` — \bgarkein\b
-  - Änderung: `garkein`→`gar`, `käsebrot`→`kein`, `sondern`→`käsebrot`, `gurken`→`sondern`, `drin`→`gurken`, `waren.`→`drin`, `∅`→`waren.`
-- `SN:/\bausversehen\b/` — \bausversehen\b
-  - Vorher: `ich hab ausversehen die brotdose von jonas mitgenommen und erst zuhause gemerkt das da gar kein käsebrot sondern gurken `
-  - Nachher: `ich hab aus Versehen die brotdose von jonas mitgenommen und erst zuhause gemerkt das da gar kein käsebrot sondern gurken`
-- `SN:/\bzuhause\b/` — \bzuhause\b
-  - Vorher: `ich hab aus Versehen die brotdose von jonas mitgenommen und erst zuhause gemerkt das da gar kein käsebrot sondern gurken`
-  - Nachher: `ich hab aus Versehen die brotdose von jonas mitgenommen und erst zu Hause gemerkt das da gar kein käsebrot sondern gurke`
-- `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` — \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b
+- `SN:/\b(dachte|gemerkt)\s+das\b/` — \b(dachte|gemerkt)\s+das\b
   - Änderung: `gemerkt`→`gemerkt,`, `das`→`dass`
 
 **PG** (1 Regel)
@@ -821,12 +752,8 @@ Token-Differenzen (FLOW→Gold):
 
 ### Abweichung von Gold
 
-Token-Differenzen (FLOW→Gold):
-
-- `brotdose`→`Brotdose`
-- `jonas`→`Jonas`
-- `käsebrot`→`Käsebrot,`
-- `gurken`→`Gurken`
+- Vorher (FLOW): `Ich habe ausversehen die brotdose von jonas mitgenommen und erst zuhause gemerkt, dass da garkein käsebrot sondern gurken drin waren.`
+- Nachher (Gold): `Ich habe aus Versehen die Brotdose von Jonas mitgenommen und erst zu Hause gemerkt, dass da gar kein Käsebrot, sondern Gurken drin waren.`
 
 **ZH1-Scope-Analyse:**
 
@@ -844,7 +771,7 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `weil ich meine regenhose nicht anziehen wolte, war danach die ganze strumpfhose klitsch nass und es hat in den schuhen gequitscht.` |
-| FLOW output   | `Weil ich meine regenhose nicht anziehen wollte, war danach die ganze strumpfhose klitsch nass und es hat in den schuhen gequietscht.` |
+| FLOW output   | `Weil ich meine regenhose nicht anziehen wollte, war danach die ganze strumpfhose klitsch nass und es hat in den schuhen gequitscht.` |
 | Gold (clean)  | `Weil ich meine Regenhose nicht anziehen wollte, war danach die ganze Strumpfhose klitschnass und es hat in den Schuhen gequietscht.` |
 | Übereinstimmung | ⚠️ partiell |
 
@@ -854,11 +781,6 @@ Token-Differenzen (FLOW→Gold):
 
 - `SL:/\bwolte\b/` — \bwolte\b
   - Änderung: `wolte,`→`wollte,`
-
-**PG** (1 Regel)
-
-- `PG:/\bgequitscht\b/` — \bgequitscht\b
-  - Änderung: `gequitscht.`→`gequietscht.`
 
 **POST** (1 Regel)
 
@@ -879,7 +801,7 @@ Token-Differenzen (FLOW→Gold):
 - `in`→`den`
 - `den`→`Schuhen`
 - `schuhen`→`gequietscht.`
-- `gequietscht.`→`∅`
+- `gequitscht.`→`∅`
 
 **ZH1-Scope-Analyse:**
 
@@ -896,17 +818,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `meine freundin war beleidigt, weil ich bei den geheimnis ausversehen doch meiner cousine was davon erzählt hab.` |
-| FLOW output   | `Meine freundin war beleidigt, weil ich bei den geheimnis aus Versehen doch meiner cousine was davon erzählt habe.` |
+| FLOW output   | `Meine freundin war beleidigt, weil ich bei den geheimnis ausversehen doch meiner cousine was davon erzählt habe.` |
 | Gold (clean)  | `Meine Freundin war beleidigt, weil ich bei dem Geheimnis aus Versehen doch meiner Cousine etwas davon erzählt habe.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (1 Regel)
-
-- `SN:/\bausversehen\b/` — \bausversehen\b
-  - Vorher: `meine freundin war beleidigt, weil ich bei den geheimnis ausversehen doch meiner cousine was davon erzählt hab.`
-  - Nachher: `meine freundin war beleidigt, weil ich bei den geheimnis aus Versehen doch meiner cousine was davon erzählt hab.`
 
 **PG** (1 Regel)
 
@@ -925,8 +841,15 @@ Token-Differenzen (FLOW→Gold):
 - `freundin`→`Freundin`
 - `den`→`dem`
 - `geheimnis`→`Geheimnis`
-- `cousine`→`Cousine`
-- `was`→`etwas`
+- `ausversehen`→`aus`
+- `doch`→`Versehen`
+- `meiner`→`doch`
+- `cousine`→`meiner`
+- `was`→`Cousine`
+- `davon`→`etwas`
+- `erzählt`→`davon`
+- `habe.`→`erzählt`
+- `∅`→`habe.`
 
 **ZH1-Scope-Analyse:**
 
@@ -978,34 +901,26 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `wen ich krank bin find ich es erst gut nicht in die shule zu müßen, aber später ist mir dann immer langweilich und komisch.` |
-| FLOW output   | `Wenn ich krank bin find ich es erst gut nicht in die Schule zu müßen, aber später ist mir dann immer langweilich und komisch.` |
+| FLOW output   | `Wen ich krank bin find ich es erst gut nicht in die shule zu müßen, aber später ist mir dann immer langweilich und komisch.` |
 | Gold (clean)  | `Wenn ich krank bin, finde ich es erst gut, nicht in die Schule zu müssen, aber später ist mir dann immer langweilig und komisch.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (1 Regel)
-
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
-**PG** (1 Regel)
-
-- `PG:/\bshule\b/` — \bshule\b
-  - Änderung: `shule`→`Schule`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `wenn`→`Wenn`
+  - Änderung: `wen`→`Wen`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Wen`→`Wenn`
 - `bin`→`bin,`
 - `find`→`finde`
 - `gut`→`gut,`
+- `shule`→`Schule`
 - `müßen,`→`müssen,`
 - `langweilich`→`langweilig`
 
@@ -1025,16 +940,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich hab mein referat fast fertig gehabt bis der computer einfach ausging und danach war die hälfte wider weg.` |
-| FLOW output   | `Ich habe mein referat fast fertig gehabt bis der computer einfach ausging und danach war die hälfte wieder weg.` |
+| FLOW output   | `Ich habe mein referat fast fertig gehabt bis der computer einfach ausging und danach war die hälfte wider weg.` |
 | Gold (clean)  | `Ich hatte mein Referat fast fertig, bis der Computer einfach ausging, und danach war die Hälfte wieder weg.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**MO** (1 Regel)
-
-- `MO:/\bwider\b/` — \bwider\b
-  - Änderung: `wider`→`wieder`
 
 **PG** (1 Regel)
 
@@ -1064,7 +974,7 @@ Token-Differenzen (FLOW→Gold):
 - `war`→`die`
 - `die`→`Hälfte`
 - `hälfte`→`wieder`
-- `wieder`→`weg.`
+- `wider`→`weg.`
 - `weg.`→`∅`
 
 **ZH1-Scope-Analyse:**
@@ -1081,23 +991,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `als wir bei tante mila waren durfte ich eigendlich fern sehen, nur dan haben die erwaksenen wider angefangen über geld zu reden und ich sollte leiser sein.` |
-| FLOW output   | `Als wir bei tante mila waren durfte ich eigentlich fern sehen, nur dann haben die erwaksenen wieder angefangen über geld zu reden und ich sollte leiser sein.` |
+| FLOW output   | `Als wir bei tante mila waren durfte ich eigentlich fern sehen, nur dan haben die erwaksenen wider angefangen über geld zu reden und ich sollte leiser sein.` |
 | Gold (clean)  | `Als wir bei Tante Mila waren, durfte ich eigentlich fernsehen, nur dann haben die Erwachsenen wieder angefangen, über Geld zu reden, und ich sollte leiser sein.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (1 Regel)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
-
-**MO** (2 Regeln)
+**MO** (1 Regel)
 
 - `MO:/\beigendlich\b/` — \beigendlich\b
   - Änderung: `eigendlich`→`eigentlich`
-- `MO:/\bwider\b/` — \bwider\b
-  - Änderung: `wider`→`wieder`
 
 **POST** (1 Regel)
 
@@ -1106,7 +1009,7 @@ Token-Differenzen (FLOW→Gold):
 
 ### Abweichung von Gold
 
-- Vorher (FLOW): `Als wir bei tante mila waren durfte ich eigentlich fern sehen, nur dann haben die erwaksenen wieder angefangen über geld zu reden und ich sollte leiser sein.`
+- Vorher (FLOW): `Als wir bei tante mila waren durfte ich eigentlich fern sehen, nur dan haben die erwaksenen wider angefangen über geld zu reden und ich sollte leiser sein.`
 - Nachher (Gold): `Als wir bei Tante Mila waren, durfte ich eigentlich fernsehen, nur dann haben die Erwachsenen wieder angefangen, über Geld zu reden, und ich sollte leiser sein.`
 
 **ZH1-Scope-Analyse:**
@@ -1167,16 +1070,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `mein bruder sagt immer ich petze, obwol ich nur nicht wil das ich nacher mit ärger kriege.` |
-| FLOW output   | `Mein bruder sagt immer ich petze, obwohl ich nur nicht wil das ich nacher mit ärger kriege.` |
+| FLOW output   | `Mein bruder sagt immer ich petze, obwol ich nur nicht wil das ich nacher mit ärger kriege.` |
 | Gold (clean)  | `Mein Bruder sagt immer, ich petze, obwohl ich nur nicht will, dass ich nachher mit Ärger kriege.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (1 Regel)
-
-- `SL:/\bobwol\b/` — \bobwol\b
-  - Änderung: `obwol`→`obwohl`
 
 **POST** (1 Regel)
 
@@ -1189,6 +1087,7 @@ Token-Differenzen (FLOW→Gold):
 
 - `bruder`→`Bruder`
 - `immer`→`immer,`
+- `obwol`→`obwohl`
 - `wil`→`will,`
 - `das`→`dass`
 - `nacher`→`nachher`
@@ -1209,18 +1108,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich hab mich so auf den schulausflug gefreut das ich nachts kaum geschlafen habe, und morgens dan den wecker trozdem nicht gehört.` |
-| FLOW output   | `Ich habe mich so auf den schulausflug gefreut das ich nachts kaum geschlafen habe, und morgens dann den wecker trotzdem nicht gehört.` |
+| FLOW output   | `Ich habe mich so auf den schulausflug gefreut das ich nachts kaum geschlafen habe, und morgens dan den wecker trotzdem nicht gehört.` |
 | Gold (clean)  | `Ich habe mich so auf den Schulausflug gefreut, dass ich nachts kaum geschlafen habe und morgens dann den Wecker trotzdem nicht gehört habe.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (2 Regeln)
+**SL** (1 Regel)
 
 - `SL:/\btrozdem\b/` — \btrozdem\b
   - Änderung: `trozdem`→`trotzdem`
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
 
 **PG** (1 Regel)
 
@@ -1240,6 +1137,7 @@ Token-Differenzen (FLOW→Gold):
 - `gefreut`→`gefreut,`
 - `das`→`dass`
 - `habe,`→`habe`
+- `dan`→`dann`
 - `wecker`→`Wecker`
 - `gehört.`→`gehört`
 - `∅`→`habe.`
@@ -1260,16 +1158,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `weil oma die fenster offen gelassen hatt sind die vorhänge so doll geflattert, das ich dachte da ist jemand im wohnzimmer.` |
-| FLOW output   | `Weil oma die fenster offen gelassen hat sind die vorhänge so doll geflattert, das ich dachte da ist jemand im wohnzimmer.` |
+| FLOW output   | `Weil oma die fenster offen gelassen hatt sind die vorhänge so doll geflattert, das ich dachte da ist jemand im wohnzimmer.` |
 | Gold (clean)  | `Weil Oma die Fenster offen gelassen hat, sind die Vorhänge so doll geflattert, dass ich dachte, da ist jemand im Wohnzimmer.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**PG** (1 Regel)
-
-- `PG:/\bhatt\b/` — \bhatt\b
-  - Änderung: `hatt`→`hat`
 
 **POST** (1 Regel)
 
@@ -1282,7 +1175,7 @@ Token-Differenzen (FLOW→Gold):
 
 - `oma`→`Oma`
 - `fenster`→`Fenster`
-- `hat`→`hat,`
+- `hatt`→`hat,`
 - `vorhänge`→`Vorhänge`
 - `das`→`dass`
 - `dachte`→`dachte,`
@@ -1304,18 +1197,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich wollte nur kurz den ball holen, aber dan bin ich auf den nassen blättern ausgerutscht und mein knie hat ganz gebrant.` |
-| FLOW output   | `Ich wollte nur kurz den ball holen, aber dann bin ich auf den nassen blättern ausgerutscht und mein knie hat ganz gebrannt.` |
+| FLOW output   | `Ich wollte nur kurz den ball holen, aber dan bin ich auf den nassen blättern ausgerutscht und mein knie hat ganz gebrant.` |
 | Gold (clean)  | `Ich wollte nur kurz den Ball holen, aber dann bin ich auf den nassen Blättern ausgerutscht und mein Knie hat ganz gebrannt.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (2 Regeln)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
-- `SL:/\bgebrant\b/` — \bgebrant\b
-  - Änderung: `gebrant.`→`gebrannt.`
 
 **POST** (1 Regel)
 
@@ -1327,8 +1213,10 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `ball`→`Ball`
+- `dan`→`dann`
 - `blättern`→`Blättern`
 - `knie`→`Knie`
+- `gebrant.`→`gebrannt.`
 
 **ZH1-Scope-Analyse:**
 
@@ -1344,37 +1232,31 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `wen mama traurig ist redet sie leiser als sonst, und dann trau ich mich meistens garnicht was lustiges zu sagen.` |
-| FLOW output   | `Wenn mama traurig ist redet sie leiser als sonst, und dann trau ich mich meistens gar nicht was lustiges zu sagen.` |
+| FLOW output   | `Wen mama traurig ist redet sie leiser als sonst, und dann trau ich mich meistens garnicht was lustiges zu sagen.` |
 | Gold (clean)  | `Wenn Mama traurig ist, redet sie leiser als sonst, und dann traue ich mich meistens gar nicht, etwas Lustiges zu sagen.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SN** (1 Regel)
-
-- `SN:/\bgarnicht\b/` — \bgarnicht\b
-  - Änderung: `garnicht`→`gar`, `was`→`nicht`, `lustiges`→`was`, `zu`→`lustiges`, `sagen.`→`zu`, `∅`→`sagen.`
-
-**SL** (1 Regel)
-
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `wenn`→`Wenn`
+  - Änderung: `wen`→`Wen`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Wen`→`Wenn`
 - `mama`→`Mama`
 - `ist`→`ist,`
 - `trau`→`traue`
-- `nicht`→`nicht,`
-- `was`→`etwas`
-- `lustiges`→`Lustiges`
+- `garnicht`→`gar`
+- `was`→`nicht,`
+- `lustiges`→`etwas`
+- `zu`→`Lustiges`
+- `sagen.`→`zu`
+- `∅`→`sagen.`
 
 **ZH1-Scope-Analyse:**
 
@@ -1434,23 +1316,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `unsere katze kommt immer genau dan rein wen ich die türe grade wieder zu gemacht habe und dan mauzt sie als wär ich schuld.` |
-| FLOW output   | `Unsere katze kommt immer genau dann rein, wenn ich die türe grade wieder zu gemacht habe und dann mauzt sie als wär ich schuld.` |
+| FLOW output   | `Unsere katze kommt immer genau dan rein wen ich die türe grade wieder zu gemacht habe und dan mauzt sie als wär ich schuld.` |
 | Gold (clean)  | `Unsere Katze kommt immer genau dann rein, wenn ich die Tür gerade wieder zugemacht habe, und dann mauzt sie, als wäre ich schuld.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (2 Regeln)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`, `dan`→`dann`
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
-**GR** (1 Regel)
-
-- `de-gr-komma-nebensatz` — de-gr-komma-nebensatz
-  - Änderung: `rein`→`rein,`
 
 **POST** (1 Regel)
 
@@ -1462,13 +1332,16 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `katze`→`Katze`
+- `dan`→`dann`
+- `rein`→`rein,`
+- `wen`→`wenn`
 - `türe`→`Tür`
 - `grade`→`gerade`
 - `zu`→`zugemacht`
 - `gemacht`→`habe,`
 - `habe`→`und`
 - `und`→`dann`
-- `dann`→`mauzt`
+- `dan`→`mauzt`
 - `mauzt`→`sie,`
 - `sie`→`als`
 - `als`→`wäre`
@@ -1532,26 +1405,22 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `obwol ich garkeinen hunger mehr hatte, sollte ich den teller leer essen und mir war danach voll schlecht im auto.` |
-| FLOW output   | `Obwohl ich garkeinen hunger mehr hatte, sollte ich den teller leer essen und mir war danach voll schlecht im auto.` |
+| FLOW output   | `Obwol ich garkeinen hunger mehr hatte, sollte ich den teller leer essen und mir war danach voll schlecht im auto.` |
 | Gold (clean)  | `Obwohl ich gar keinen Hunger mehr hatte, sollte ich den Teller leer essen, und mir war danach im Auto total schlecht.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (1 Regel)
-
-- `SL:/\bobwol\b/` — \bobwol\b
-  - Änderung: `obwol`→`obwohl`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `obwohl`→`Obwohl`
+  - Änderung: `obwol`→`Obwol`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Obwol`→`Obwohl`
 - `garkeinen`→`gar`
 - `hunger`→`keinen`
 - `mehr`→`Hunger`
@@ -1632,16 +1501,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `als der strom kurz weg war, hab ich erst gelacht aber dan wurde es im flur so still das ich doch angst gekriegt habe.` |
-| FLOW output   | `Als der strom kurz weg war, habe ich erst gelacht aber dann wurde es im flur so still das ich doch angst gekriegt habe.` |
+| FLOW output   | `Als der strom kurz weg war, habe ich erst gelacht aber dan wurde es im flur so still das ich doch angst gekriegt habe.` |
 | Gold (clean)  | `Als der Strom kurz weg war, habe ich erst gelacht, aber dann wurde es im Flur so still, dass ich doch Angst gekriegt habe.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (1 Regel)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
 
 **PG** (1 Regel)
 
@@ -1659,6 +1523,7 @@ Token-Differenzen (FLOW→Gold):
 
 - `strom`→`Strom`
 - `gelacht`→`gelacht,`
+- `dan`→`dann`
 - `flur`→`Flur`
 - `still`→`still,`
 - `das`→`dass`
@@ -1840,26 +1705,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich hab die hausis extra gleich gemacht damit ich später spielen kann, aber dan kam noch lesen und zimmer aufreumen dazu.` |
-| FLOW output   | `Ich habe die hausis extra gleich gemacht, damit ich später spielen kann, aber dann kam noch lesen und zimmer aufreumen dazu.` |
+| FLOW output   | `Ich habe die hausis extra gleich gemacht damit ich später spielen kann, aber dan kam noch lesen und zimmer aufreumen dazu.` |
 | Gold (clean)  | `Ich habe die Hausaufgaben extra gleich gemacht, damit ich später spielen kann, aber dann kamen noch Lesen und Zimmer aufräumen dazu.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (1 Regel)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
-
 **PG** (1 Regel)
 
 - `PG:/\bhab\b/` — \bhab\b
   - Änderung: `hab`→`habe`
-
-**GR** (1 Regel)
-
-- `de-gr-komma-nebensatz` — de-gr-komma-nebensatz
-  - Änderung: `gemacht`→`gemacht,`
 
 **POST** (1 Regel)
 
@@ -1871,6 +1726,8 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `hausis`→`Hausaufgaben`
+- `gemacht`→`gemacht,`
+- `dan`→`dann`
 - `kam`→`kamen`
 - `lesen`→`Lesen`
 - `zimmer`→`Zimmer`
@@ -1892,30 +1749,25 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `wen der bus zu spät kommt werde ich immer hibbelig, weil ich dan denke die lehrerin glaubt mir das eh nicht.` |
-| FLOW output   | `Wenn der bus zu spät kommt werde ich immer hibbelig, weil ich dann denke die lehrerin glaubt mir das eh nicht.` |
+| FLOW output   | `Wen der bus zu spät kommt werde ich immer hibbelig, weil ich dan denke die lehrerin glaubt mir das eh nicht.` |
 | Gold (clean)  | `Wenn der Bus zu spät kommt, werde ich immer hibbelig, weil ich dann denke, die Lehrerin glaubt mir das eh nicht.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (2 Regeln)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `wenn`→`Wenn`
+  - Änderung: `wen`→`Wen`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Wen`→`Wenn`
 - `bus`→`Bus`
 - `kommt`→`kommt,`
+- `dan`→`dann`
 - `denke`→`denke,`
 - `lehrerin`→`Lehrerin`
 
@@ -1934,16 +1786,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `als ich den schnee mann gebaut hab, sind meine handschuhe irgentwann so nass geworden das die finger weh getan haben.` |
-| FLOW output   | `Als ich den schnee mann gebaut habe, sind meine handschuhe irgendwann so nass geworden das die finger weh getan haben.` |
+| FLOW output   | `Als ich den schnee mann gebaut habe, sind meine handschuhe irgentwann so nass geworden das die finger weh getan haben.` |
 | Gold (clean)  | `Als ich den Schneemann gebaut habe, sind meine Handschuhe irgendwann so nass geworden, dass die Finger wehgetan haben.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**MO** (1 Regel)
-
-- `MO:/\birgentwann\b/` — \birgentwann\b
-  - Änderung: `irgentwann`→`irgendwann`
 
 **PG** (1 Regel)
 
@@ -1966,7 +1813,7 @@ Token-Differenzen (FLOW→Gold):
 - `sind`→`meine`
 - `meine`→`Handschuhe`
 - `handschuhe`→`irgendwann`
-- `irgendwann`→`so`
+- `irgentwann`→`so`
 - `so`→`nass`
 - `nass`→`geworden,`
 - `geworden`→`dass`
@@ -2091,7 +1938,7 @@ Token-Differenzen (FLOW→Gold):
 
 **SN** (1 Regel)
 
-- `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` — \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b
+- `SN:/\b(dachte|gemerkt)\s+das\b/` — \b(dachte|gemerkt)\s+das\b
   - Änderung: `dachte`→`dachte,`, `das`→`dass`
 
 **PG** (1 Regel)
@@ -2215,16 +2062,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `weil ich die uhr falsch gelesen hab stand ich viel zu frü auf und hab dan im dunkeln schon mein brot geschmiert.` |
-| FLOW output   | `Weil ich die uhr falsch gelesen habe stand ich viel zu frü auf und habe dann im dunkeln schon mein brot geschmiert.` |
+| FLOW output   | `Weil ich die uhr falsch gelesen habe stand ich viel zu frü auf und habe dan im dunkeln schon mein brot geschmiert.` |
 | Gold (clean)  | `Weil ich die Uhr falsch gelesen habe, stand ich viel zu früh auf und habe dann im Dunkeln schon mein Brot geschmiert.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (1 Regel)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
 
 **PG** (1 Regel)
 
@@ -2243,6 +2085,7 @@ Token-Differenzen (FLOW→Gold):
 - `uhr`→`Uhr`
 - `habe`→`habe,`
 - `frü`→`früh`
+- `dan`→`dann`
 - `dunkeln`→`Dunkeln`
 - `brot`→`Brot`
 
@@ -2309,16 +2152,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich wollte nur helfen die taschen rein zu tragen und dan ist mir genau der beutel mit den äpfeln unten aufgeplatzt.` |
-| FLOW output   | `Ich wollte nur helfen die taschen rein zu tragen und dann ist mir genau der beutel mit den äpfeln unten aufgeplatzt.` |
+| FLOW output   | `Ich wollte nur helfen die taschen rein zu tragen und dan ist mir genau der beutel mit den äpfeln unten aufgeplatzt.` |
 | Gold (clean)  | `Ich wollte nur helfen, die Taschen reinzutragen, und dann ist mir genau der Beutel mit den Äpfeln unten aufgeplatzt.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (1 Regel)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
 
 **POST** (1 Regel)
 
@@ -2335,7 +2173,7 @@ Token-Differenzen (FLOW→Gold):
 - `zu`→`und`
 - `tragen`→`dann`
 - `und`→`ist`
-- `dann`→`mir`
+- `dan`→`mir`
 - `ist`→`genau`
 - `mir`→`der`
 - `genau`→`Beutel`
@@ -2362,17 +2200,15 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `in sachkunde hab ich erst nix verstanden, weil alle von verdunstung geredet haben und ich dachte das hat was mit dunst im bad zu tuhn.` |
-| FLOW output   | `In sachkunde habe ich erst nichts verstanden, weil alle von verdunstung geredet haben und ich dachte, dass hat was mit dunst im bad zu tuhn.` |
+| FLOW output   | `In sachkunde habe ich erst nix verstanden, weil alle von verdunstung geredet haben und ich dachte, dass hat was mit dunst im bad zu tuhn.` |
 | Gold (clean)  | `In Sachkunde habe ich erst nichts verstanden, weil alle von Verdunstung geredet haben und ich dachte, das hat etwas mit Dunst im Bad zu tun.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SN** (2 Regeln)
+**SN** (1 Regel)
 
-- `SN:/\bnix\b/` — \bnix\b
-  - Änderung: `nix`→`nichts`
-- `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` — \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b
+- `SN:/\b(dachte|gemerkt)\s+das\b/` — \b(dachte|gemerkt)\s+das\b
   - Änderung: `dachte`→`dachte,`, `das`→`dass`
 
 **PG** (1 Regel)
@@ -2390,6 +2226,7 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `sachkunde`→`Sachkunde`
+- `nix`→`nichts`
 - `verdunstung`→`Verdunstung`
 - `dass`→`das`
 - `was`→`etwas`
@@ -2462,7 +2299,7 @@ Token-Differenzen (FLOW→Gold):
 
 **SN** (1 Regel)
 
-- `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` — \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b
+- `SN:/\b(dachte|gemerkt)\s+das\b/` — \b(dachte|gemerkt)\s+das\b
   - Änderung: `gemerkt`→`gemerkt,`, `das`→`dass`
 
 **PG** (1 Regel)
@@ -2507,30 +2344,25 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `wen papa sagt wir fahren nur ganz kurz einkaufen, dan dauert es meisstens extra lang und ich krieg hunger im laden.` |
-| FLOW output   | `Wenn papa sagt wir fahren nur ganz kurz einkaufen, dann dauert es meisstens extra lang und ich krieg hunger im laden.` |
+| FLOW output   | `Wen papa sagt wir fahren nur ganz kurz einkaufen, dan dauert es meisstens extra lang und ich krieg hunger im laden.` |
 | Gold (clean)  | `Wenn Papa sagt, wir fahren nur ganz kurz einkaufen, dann dauert es meistens extra lang und ich bekomme Hunger im Laden.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (2 Regeln)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `wenn`→`Wenn`
+  - Änderung: `wen`→`Wen`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Wen`→`Wenn`
 - `papa`→`Papa`
 - `sagt`→`sagt,`
+- `dan`→`dann`
 - `meisstens`→`meistens`
 - `krieg`→`bekomme`
 - `hunger`→`Hunger`
@@ -2552,26 +2384,22 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `obwol wir im test leise sein sollten, hat mein magen so laut geknurt das sogar tom sich umgedreht hat.` |
-| FLOW output   | `Obwohl wir im test leise sein sollten, hat mein magen so laut geknurt das sogar tom sich umgedreht hat.` |
+| FLOW output   | `Obwol wir im test leise sein sollten, hat mein magen so laut geknurt das sogar tom sich umgedreht hat.` |
 | Gold (clean)  | `Obwohl wir im Test leise sein sollten, hat mein Magen so laut geknurrt, dass sogar Tom sich umgedreht hat.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (1 Regel)
-
-- `SL:/\bobwol\b/` — \bobwol\b
-  - Änderung: `obwol`→`obwohl`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `obwohl`→`Obwohl`
+  - Änderung: `obwol`→`Obwol`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Obwol`→`Obwohl`
 - `test`→`Test`
 - `magen`→`Magen`
 - `geknurt`→`geknurrt,`
@@ -2594,16 +2422,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich hab meiner oma einen brief gemalt und geschriben, aber die adresse war falsch und er kam wider zurück.` |
-| FLOW output   | `Ich habe meiner oma einen brief gemalt und geschriben, aber die adresse war falsch und er kam wieder zurück.` |
+| FLOW output   | `Ich habe meiner oma einen brief gemalt und geschriben, aber die adresse war falsch und er kam wider zurück.` |
 | Gold (clean)  | `Ich habe meiner Oma einen Brief gemalt und geschrieben, aber die Adresse war falsch und er kam wieder zurück.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**MO** (1 Regel)
-
-- `MO:/\bwider\b/` — \bwider\b
-  - Änderung: `wider`→`wieder`
 
 **PG** (1 Regel)
 
@@ -2623,6 +2446,7 @@ Token-Differenzen (FLOW→Gold):
 - `brief`→`Brief`
 - `geschriben,`→`geschrieben,`
 - `adresse`→`Adresse`
+- `wider`→`wieder`
 
 **ZH1-Scope-Analyse:**
 
@@ -2685,18 +2509,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich sollte eigendlich nur die decke holen, aber dann hab ich im dunklen keller wider dieses komische ticken gehört.` |
-| FLOW output   | `Ich sollte eigentlich nur die decke holen, aber dann habe ich im dunklen keller wieder dieses komische ticken gehört.` |
+| FLOW output   | `Ich sollte eigentlich nur die decke holen, aber dann habe ich im dunklen keller wider dieses komische ticken gehört.` |
 | Gold (clean)  | `Ich sollte eigentlich nur die Decke holen, aber dann habe ich im dunklen Keller wieder dieses komische Ticken gehört.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**MO** (2 Regeln)
+**MO** (1 Regel)
 
 - `MO:/\beigendlich\b/` — \beigendlich\b
   - Änderung: `eigendlich`→`eigentlich`
-- `MO:/\bwider\b/` — \bwider\b
-  - Änderung: `wider`→`wieder`
 
 **PG** (1 Regel)
 
@@ -2714,6 +2536,7 @@ Token-Differenzen (FLOW→Gold):
 
 - `decke`→`Decke`
 - `keller`→`Keller`
+- `wider`→`wieder`
 - `ticken`→`Ticken`
 
 **ZH1-Scope-Analyse:**
@@ -2767,16 +2590,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `meine schwester behauptet immer sie hätte nix gemacht, obwohl man genau sieht das sie die schokoladenfinger an der tür hatte.` |
-| FLOW output   | `Meine schwester behauptet immer sie hätte nichts gemacht, obwohl man genau sieht das sie die schokoladenfinger an der tür hatte.` |
+| FLOW output   | `Meine schwester behauptet immer sie hätte nix gemacht, obwohl man genau sieht das sie die schokoladenfinger an der tür hatte.` |
 | Gold (clean)  | `Meine Schwester behauptet immer, sie hätte nichts gemacht, obwohl man genau sieht, dass sie die Schokoladenfinger an der Tür hatte.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (1 Regel)
-
-- `SN:/\bnix\b/` — \bnix\b
-  - Änderung: `nix`→`nichts`
 
 **POST** (1 Regel)
 
@@ -2789,6 +2607,7 @@ Token-Differenzen (FLOW→Gold):
 
 - `schwester`→`Schwester`
 - `immer`→`immer,`
+- `nix`→`nichts`
 - `sieht`→`sieht,`
 - `das`→`dass`
 - `schokoladenfinger`→`Schokoladenfinger`
@@ -2881,19 +2700,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `ich hab dem lehrer erst garnicht gesagt das ich die mappe vergessen habe, weil ich gehoft hab das er es nicht merkt.` |
-| FLOW output   | `Ich habe dem lehrer erst gar nicht gesagt, dass ich die mappe vergessen habe, weil ich gehoft habe das er es nicht merkt.` |
+| FLOW output   | `Ich habe dem lehrer erst garnicht gesagt das ich die mappe vergessen habe, weil ich gehoft habe das er es nicht merkt.` |
 | Gold (clean)  | `Ich habe dem Lehrer erst gar nicht gesagt, dass ich die Mappe vergessen habe, weil ich gehofft habe, dass er es nicht merkt.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (2 Regeln)
-
-- `SN:/\bgarnicht\b/` — \bgarnicht\b
-  - Vorher: `ich hab dem lehrer erst garnicht gesagt das ich die mappe vergessen habe, weil ich gehoft hab das er es nicht merkt.`
-  - Nachher: `ich hab dem lehrer erst gar nicht gesagt das ich die mappe vergessen habe, weil ich gehoft hab das er es nicht merkt.`
-- `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` — \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b
-  - Änderung: `gesagt`→`gesagt,`, `das`→`dass`
 
 **PG** (1 Regel)
 
@@ -2910,10 +2721,24 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `lehrer`→`Lehrer`
-- `mappe`→`Mappe`
-- `gehoft`→`gehofft`
-- `habe`→`habe,`
-- `das`→`dass`
+- `garnicht`→`gar`
+- `gesagt`→`nicht`
+- `das`→`gesagt,`
+- `ich`→`dass`
+- `die`→`ich`
+- `mappe`→`die`
+- `vergessen`→`Mappe`
+- `habe,`→`vergessen`
+- `weil`→`habe,`
+- `ich`→`weil`
+- `gehoft`→`ich`
+- `habe`→`gehofft`
+- `das`→`habe,`
+- `er`→`dass`
+- `es`→`er`
+- `nicht`→`es`
+- `merkt.`→`nicht`
+- `∅`→`merkt.`
 
 **ZH1-Scope-Analyse:**
 
@@ -2930,32 +2755,27 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `wen wir im auto singen findet mama das lustig, aber papa sagt dan immer wir treffen die töne von außen.` |
-| FLOW output   | `Wenn wir im auto singen findet mama das lustig, aber papa sagt dann immer wir treffen die töne von außen.` |
+| FLOW output   | `Wen wir im auto singen findet mama das lustig, aber papa sagt dan immer wir treffen die töne von außen.` |
 | Gold (clean)  | `Wenn wir im Auto singen, findet Mama das lustig, aber Papa sagt dann immer, wir treffen die Töne von außen.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (2 Regeln)
-
-- `SL:/\bdan\b/` — \bdan\b
-  - Änderung: `dan`→`dann`
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `wenn`→`Wenn`
+  - Änderung: `wen`→`Wen`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Wen`→`Wenn`
 - `auto`→`Auto`
 - `singen`→`singen,`
 - `mama`→`Mama`
 - `papa`→`Papa`
+- `dan`→`dann`
 - `immer`→`immer,`
 - `töne`→`Töne`
 
@@ -2974,17 +2794,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `im schwimmbad hab ich so getan als wär das wasser garnicht kalt, obwohl ich eigendlich fast wieder raus springen wolte.` |
-| FLOW output   | `Im schwimmbad habe ich so getan als wär das wasser gar nicht kalt, obwohl ich eigentlich fast wieder raus springen wollte.` |
+| FLOW output   | `Im schwimmbad habe ich so getan als wär das wasser garnicht kalt, obwohl ich eigentlich fast wieder raus springen wollte.` |
 | Gold (clean)  | `Im Schwimmbad habe ich so getan, als wäre das Wasser gar nicht kalt, obwohl ich eigentlich fast wieder rausspringen wollte.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SN** (1 Regel)
-
-- `SN:/\bgarnicht\b/` — \bgarnicht\b
-  - Vorher: `im schwimmbad hab ich so getan als wär das wasser garnicht kalt, obwohl ich eigendlich fast wieder raus springen wolte.`
-  - Nachher: `im schwimmbad hab ich so getan als wär das wasser gar nicht kalt, obwohl ich eigendlich fast wieder raus springen wolte.`
 
 **SL** (1 Regel)
 
@@ -3014,9 +2828,15 @@ Token-Differenzen (FLOW→Gold):
 - `getan`→`getan,`
 - `wär`→`wäre`
 - `wasser`→`Wasser`
-- `raus`→`rausspringen`
-- `springen`→`wollte.`
-- `wollte.`→`∅`
+- `garnicht`→`gar`
+- `kalt,`→`nicht`
+- `obwohl`→`kalt,`
+- `ich`→`obwohl`
+- `eigentlich`→`ich`
+- `fast`→`eigentlich`
+- `wieder`→`fast`
+- `raus`→`wieder`
+- `springen`→`rausspringen`
 
 **ZH1-Scope-Analyse:**
 
@@ -3156,18 +2976,11 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `obwol ich heute mal früh schlafen sollte hab ich noch so lange unter der decke gelesen bis die augen gebrant haben.` |
-| FLOW output   | `Obwohl ich heute mal früh schlafen sollte habe ich noch so lange unter der decke gelesen bis die augen gebrannt haben.` |
+| FLOW output   | `Obwol ich heute mal früh schlafen sollte habe ich noch so lange unter der decke gelesen bis die augen gebrant haben.` |
 | Gold (clean)  | `Obwohl ich heute mal früh schlafen sollte, habe ich noch so lange unter der Decke gelesen, bis die Augen gebrannt haben.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
-
-**SL** (2 Regeln)
-
-- `SL:/\bgebrant\b/` — \bgebrant\b
-  - Änderung: `gebrant`→`gebrannt`
-- `SL:/\bobwol\b/` — \bobwol\b
-  - Änderung: `obwol`→`obwohl`
 
 **PG** (1 Regel)
 
@@ -3177,16 +2990,18 @@ Token-Differenzen (FLOW→Gold):
 **POST** (1 Regel)
 
 - `post-normalize` — Whitespace + Satzanfang-Großschreibung
-  - Änderung: `obwohl`→`Obwohl`
+  - Änderung: `obwol`→`Obwol`
 
 ### Abweichung von Gold
 
 Token-Differenzen (FLOW→Gold):
 
+- `Obwol`→`Obwohl`
 - `sollte`→`sollte,`
 - `decke`→`Decke`
 - `gelesen`→`gelesen,`
 - `augen`→`Augen`
+- `gebrant`→`gebrannt`
 
 **ZH1-Scope-Analyse:**
 
@@ -3203,23 +3018,16 @@ Token-Differenzen (FLOW→Gold):
 | Rolle | Text |
 |---|---|
 | Input (noisy) | `meine tante fragt immer ob ich schon groß bin, aber wen ich dann was alleine machen will sagen alle gleich pass auf.` |
-| FLOW output   | `Meine tante fragt immer, ob ich schon groß bin, aber wenn ich dann was alleine machen will sagen alle gleich pass auf.` |
+| FLOW output   | `Meine tante fragt immer, ob ich schon groß bin, aber wen ich dann was alleine machen will sagen alle gleich pass auf.` |
 | Gold (clean)  | `Meine Tante fragt immer, ob ich schon groß bin, aber wenn ich dann etwas alleine machen will, sagen alle gleich: Pass auf.` |
 | Übereinstimmung | ⚠️ partiell |
 
 ### Regelentscheidungen
 
-**SL** (1 Regel)
-
-- `SL:/\bwen\b/` — \bwen\b
-  - Änderung: `wen`→`wenn`
-
-**GR** (2 Regeln)
+**GR** (1 Regel)
 
 - `de-gr-komma-nebensatz` — de-gr-komma-nebensatz
-  - Änderung: `immer`→`immer,`, `aber`→`aber,`
-- `de-gr-komma-nach-koordinator-undo` — de-gr-komma-nach-koordinator-undo
-  - Änderung: `aber,`→`aber`
+  - Änderung: `immer`→`immer,`
 
 **POST** (1 Regel)
 
@@ -3231,6 +3039,7 @@ Token-Differenzen (FLOW→Gold):
 Token-Differenzen (FLOW→Gold):
 
 - `tante`→`Tante`
+- `wen`→`wenn`
 - `was`→`etwas`
 - `will`→`will,`
 - `gleich`→`gleich:`
@@ -3303,46 +3112,15 @@ Token-Differenzen (FLOW→Gold):
 |---|---|---|---|
 | POST | `post-normalize` | Whitespace + Satzanfang-Großschreibung | 70 |
 | PG | `PG:/\bhab\b/` | \bhab\b | 29 |
-| GR | `de-gr-komma-nebensatz` | de-gr-komma-nebensatz | 15 |
-| SL | `SL:/\bdan\b/` | \bdan\b | 12 |
-| SL | `SL:/\bwen\b/` | \bwen\b | 9 |
+| GR | `de-gr-komma-nebensatz` | de-gr-komma-nebensatz | 12 |
 | SL | `SL:/\bwolte\b/` | \bwolte\b | 7 |
 | MO | `MO:/\beigendlich\b/` | \beigendlich\b | 7 |
-| SN | `SN:/\b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b/` | \b(dachte|gemerkt|gesagt|gewusst|gehört|glaube|glaubte|merkte|wusste|hoffte|dachten)\s+das\b | 6 |
-| MO | `MO:/\bwider\b/` | \bwider\b | 5 |
 | SL | `SL:/\btrozdem\b/` | \btrozdem\b | 4 |
-| SN | `SN:/\bgarnicht\b/` | \bgarnicht\b | 4 |
-| GR | `de-gr-komma-nach-koordinator-undo` | de-gr-komma-nach-koordinator-undo | 4 |
-| SL | `SL:/\bobwol\b/` | \bobwol\b | 4 |
-| PG | `PG:/\bhatt\b/` | \bhatt\b | 3 |
-| SN | `SN:/\bausversehen\b/` | \bausversehen\b | 3 |
-| PG | `PG:/\bshule\b/` | \bshule\b | 2 |
-| SL | `SL:/\bgebrant\b/` | \bgebrant\b | 2 |
-| SN | `SN:/\bnix\b/` | \bnix\b | 2 |
-| PG | `PG:/\bfor\b/` | \bfor\b | 1 |
-| PG | `PG:/\bgesakt\b/` | \bgesakt\b | 1 |
-| PG | `PG:/\bferge(?:ß|s)en\b/` | \bferge(?:ß|s)en\b | 1 |
-| PG | `PG:/\bkucken\b/` | \bkucken\b | 1 |
-| PG | `PG:/\bgekipt\b/` | \bgekipt\b | 1 |
-| SN | `SN:/\brunter nemen\b/` | \brunter nemen\b | 1 |
+| SN | `SN:/\b(dachte|gemerkt)\s+das\b/` | \b(dachte|gemerkt)\s+das\b | 4 |
+| GR | `de-gr-komma-nach-koordinator-undo` | de-gr-komma-nach-koordinator-undo | 3 |
 | MO | `MO:/\birgentwie\b/` | \birgentwie\b | 1 |
-| MO | `MO:/\banderst\b/` | \banderst\b | 1 |
-| MO | `MO:/\babents\b/` | \babents\b | 1 |
-| MO | `MO:/\bdrausen\b/` | \bdrausen\b | 1 |
-| PG | `PG:/\bknurt\b/` | \bknurt\b | 1 |
-| PG | `PG:/\bleuft\b/` | \bleuft\b | 1 |
-| SN | `SN:/\baufeinmal\b/` | \baufeinmal\b | 1 |
-| SL | `SL:/\bmanchma\b/` | \bmanchma\b | 1 |
-| GR | `de-gr-komma-nach-auch-undo` | de-gr-komma-nach-auch-undo | 1 |
-| PG | `PG:/\bfrür\b/` | \bfrür\b | 1 |
 | SL | `SL:/\bvieleicht\b/` | \bvieleicht\b | 1 |
 | PG | `PG:/\bweis\b/` | \bweis\b | 1 |
-| SL | `SL:/\bmuste\b/` | \bmuste\b | 1 |
-| SL | `SL:/\bmusten\b/` | \bmusten\b | 1 |
-| SN | `SN:/\bgarkein\b/` | \bgarkein\b | 1 |
-| SN | `SN:/\bzuhause\b/` | \bzuhause\b | 1 |
-| PG | `PG:/\bgequitscht\b/` | \bgequitscht\b | 1 |
-| MO | `MO:/\birgentwann\b/` | \birgentwann\b | 1 |
 
 ### Nicht vollständig korrigierte Fehlerklassen
 
@@ -3424,11 +3202,11 @@ Token-Differenzen (FLOW→Gold):
 | PUNCT | de-punct-anfuehrungszeichen, universal-punct-ellipsis, universal-punct-em-dash-* | Typografische Anführungszeichen, Ellipsis, Gedankenstrich |
 | CTX   | universal-space-before-punct, universal-multiple-spaces | Leerzeichen vor Satzzeichen, doppelte Leerzeichen |
 | CTX (deaktiviert) | de-weil-dass, de-seit-seid, de-dem-hause | das/dass nach weil/ob; seid/seit; Dativ-Formen |
-| SN    | garnich, garnicht, ausversehen, aufeinmal, zuende, weiter-gegangen, hats, dachte/gesagt/gewusst/gehört-dass | Getrennt-/Zusammenschreibung, Worttrennung, dass-Konjunktion |
-| SL    | villeicht/vieleicht, wier, wolte, trozdem, dan→dann, wen→wenn, gebrant→gebrannt | Silbenstruktur, Doppelkonsonanten, Vokalfolgen |
-| MO    | irgentwie, irgentwann, eigendlich, obwol→obwohl, erklert, gewessen, wolte | Morphologische Stammformen, nd/nt-Verwechslung |
-| PG    | gelsen, ferig, weis→weiß, shule→Schule, nich→nicht, hab→habe | Phonem-Graphem-Korrespondenz, sh/sch-Verwechslung |
-| GR    | komma-nebensatz (+damit), word-repeat, sodass, apostroph-genitiv, als-wie | Kommasetzung, Wortwiederholung, Zusammenschreibung |
+| SN    | garnich, zuende, weiter-gegangen, hats, dachte-dass | Getrennt-/Zusammenschreibung, lokale Fügungen |
+| SL    | villeicht, wier, wolte, trozdem | Silbenstruktur, Vokalfolgen |
+| MO    | irgentwie, eigendlich, erklert, gewessen, wolte | Morphologische Stammformen |
+| PG    | gelsen, ferig, weis→weiß, nigh→nicht, hab→habe | Phonem-Graphem-Korrespondenz |
+| GR    | komma-nebensatz, word-repeat, sodass, apostroph-genitiv, als-wie | Kommasetzung, Wortwiederholung, Zusammenschreibung |
 | POST  | normalizeSentenceStarts, normalizeWhitespace | Satzanfang-Großschreibung, Whitespace |
 
 ### Strukturelle Lücken (nicht abgedeckt durch FLOW DE v0.5)
@@ -3442,8 +3220,6 @@ Token-Differenzen (FLOW→Gold):
 | seid/seit | de-seit-seid deaktiviert; Homophones Paar |
 | wen/wenn, dan/dann | Doppelkonsonant-Regel fehlt im Regelwerk |
 | wahr/war, anderst/anders | Kein Kontextmodell für Homonyme |
-| wider/wieder | Homophones Paar; "wider" ist gültiges deutsches Wort (gegen/contrary) |
-| gar keinen / gar kein (zusammengeschrieben) | Nur 1× in Datensatz; Einzelfall |
-| Lautnahe Schreibvarianten (verbleibend) | PG-Lexikon abgedeckt für: shule, weis, hab, gelsen, ferig, nigh |
-| f/v-Verwechslung (for→vor, fergeßen→vergessen) | "for" ist englisches Wort; globale f/v-Regel zu riskant |
-| wen→wenn: bekanntes falsch-positiv | Akkusativ "wen" (wen rufst du an?) wird ebenfalls korrigiert |
+| Worttrennung (aus Versehen, gar nicht) | SN hat nur wenige explizite Fälle; ausversehen fehlt |
+| Lautnahe Schreibvarianten (fehlend) | PG-Lexikon sehr klein (5 Regeln) |
+| f/v-Verwechslung (for→vor, fergeßen→vergessen) | Kein f/v-Mapping im Regelwerk |
