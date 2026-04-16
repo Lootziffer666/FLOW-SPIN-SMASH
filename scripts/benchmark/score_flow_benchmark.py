@@ -140,10 +140,14 @@ def evaluate(items: list[dict], predictions: list[dict]) -> dict:
         local_fp = max(len(pred_edits) - matched_req - matched_opt, 0)
 
         tp += local_tp
+        accepted_targets = [item["primary_gold_target"], *item.get("alternative_targets", [])]
+        # Avoid penalizing diff fragmentation when prediction is an accepted full target.
+        if prediction in accepted_targets:
+            local_fp = 0
+
         fp += local_fp
         fn += local_fn
 
-        accepted_targets = [item["primary_gold_target"], *item.get("alternative_targets", [])]
         if prediction in accepted_targets:
             sem_hits += 1
 
@@ -246,6 +250,20 @@ def evaluate(items: list[dict], predictions: list[dict]) -> dict:
     no_touch_slice = aggregate([r for r in row_stats if r["no_touch"]])
     hard_case_slice = aggregate([r for r in row_stats if r["difficulty"] >= 4])
 
+    gate_targets = {
+        "edit_precision_min": 0.95,
+        "edit_recall_min": 0.80,
+        "no_op_accuracy_min": 0.95,
+        "overcorrection_rate_max": 0.05,
+    }
+    gate_status = {
+        "edit_precision": precision >= gate_targets["edit_precision_min"],
+        "edit_recall": recall >= gate_targets["edit_recall_min"],
+        "no_op_accuracy": metric_div(no_touch_unchanged, no_touch_total) >= gate_targets["no_op_accuracy_min"],
+        "overcorrection_rate": metric_div(fp, all_pred_edits) <= gate_targets["overcorrection_rate_max"],
+    }
+    gate_status["all_public_targets_pass"] = all(gate_status.values())
+
     out = {
         "public_metrics": {
             "edit_precision": precision,
@@ -286,6 +304,10 @@ def evaluate(items: list[dict], predictions: list[dict]) -> dict:
             "ambiguity_slice": ambiguity_slice,
             "no_touch_slice": no_touch_slice,
             "hard_case_slice": hard_case_slice,
+        },
+        "gates": {
+            "targets": gate_targets,
+            "status": gate_status,
         },
     }
     return out

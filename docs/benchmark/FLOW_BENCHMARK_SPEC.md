@@ -325,6 +325,7 @@ Repository structure:
 - `data/benchmark/flow_benchmark_predictions.sample.jsonl`
 - `scripts/benchmark/validate_flow_benchmark.py`
 - `scripts/benchmark/score_flow_benchmark.py`
+- `scripts/benchmark/iterate_flow_scores.py`
 - `data/benchmark/flow_benchmark_items.v1.jsonl` (future full set)
 - `data/benchmark/examples/` (future curated examples)
 

@@ -73,9 +73,11 @@ class ScoreFlowBenchmarkTests(unittest.TestCase):
         self.assertEqual(result["public_metrics"]["no_op_accuracy"], 1.0)
         self.assertEqual(result["private_metrics"]["idempotence"], 1.0)
         self.assertGreaterEqual(result["counts"]["tp"], 1)
+        self.assertEqual(result["counts"]["fp"], 0)
         self.assertIn("slices", result)
         self.assertEqual(result["slices"]["per_category"]["A"]["items"], 1)
         self.assertEqual(result["slices"]["per_category"]["D"]["items"], 1)
+        self.assertTrue(result["gates"]["status"]["all_public_targets_pass"])
 
     def test_false_shift_rate_case_based(self) -> None:
         items = [

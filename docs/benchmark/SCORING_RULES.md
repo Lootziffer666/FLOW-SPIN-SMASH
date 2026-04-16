@@ -99,3 +99,13 @@ python scripts/benchmark/score_flow_benchmark.py \
   --predictions data/benchmark/flow_benchmark_predictions.sample.jsonl \
   --pretty
 ```
+
+Run score iterations across multiple prediction files:
+
+```bash
+python scripts/benchmark/iterate_flow_scores.py \
+  --items data/benchmark/flow_benchmark_items.sample.jsonl \
+  --predictions data/benchmark/flow_benchmark_predictions.sample.jsonl \
+  --predictions data/benchmark/flow_benchmark_predictions.sample.jsonl \
+  --pretty
+```
