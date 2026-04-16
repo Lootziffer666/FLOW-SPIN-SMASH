@@ -4,25 +4,35 @@
  * Exportiert alle öffentlichen APIs des SPIN-Systems.
  * Einstiegspunkt für programmatische Nutzung und LOOM-Anbindung.
  *
- * Grammar-Module kommen aus @loot/shared (Shared Engine).
+ * Grammar-Module kommen aus @loot/loom (Shared Engine).
  * SPIN-lokale Module: phonotactics, rules.en.gr
  */
 
 export { CHUNK_TYPES, DOGMA_RULES, META_MARKERS, NULL_MARKERS } from './config.js';
 
-export { runDiagnosis, getChunkText } from './diagnosis.js';
+export { runDiagnosis, getChunkText, STATES } from './diagnosis.js';
+
+// LOOM API — direkt nutzbar für Konsumenten von @loot/spin
+export {
+  diagnoseText,
+  diagnoseFullText,
+  chunkSentence,
+  chunkText,
+  spinSignals,
+  deriveSignals,
+} from '@loot/loom';
 
 export { earcon } from './earcons.js';
 
 export { initSpin, parseSentence } from './ui.js';
 
-// Shared Engine (@loot/shared) — ehemals ./grammar/
+// Shared Engine (@loot/loom) — ehemals ./grammar/
 export {
   detectClauses,
   splitSentences,
   GR_RULES,
   contextWindowRules,
-} from '@loot/shared';
+} from '@loot/loom';
 
 // SPIN-lokale Module (noch nicht in Shared)
 export {

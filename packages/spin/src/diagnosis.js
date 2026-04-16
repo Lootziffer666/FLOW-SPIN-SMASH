@@ -1,16 +1,17 @@
 /**
- * SPIN Diagnose-Engine — 6 Diagnosezustände
+ * SPIN Diagnose-Engine
  *
- * Prioritätsreihenfolge (hart, gemäß Spec):
- * 1. performativ_instabil — Selbstreferenz + Negation (Paradox)
- * 2. normativ_selbstannullierend — Normative Aussage annulliert sich selbst
- * 3. konfliktaer — Zwei Bewertungen, unaufgelöste Polarität
- * 4. formal_stabil_semantisch_leer — Grammatisch korrekt, Platzhalter-Subjekt
- * 5. mehrkernig — Mehrere Prädikate ohne Subordination
- * 6. stabil — Keine strukturellen Spannungen
+ * Delegiert die Strukturzustandsklassifikation an @loot/loom (diagnoseChunks).
+ * LOOM liefert 8 Zustände; SPIN re-exportiert alle für die Arbeitsoberfläche.
  *
- * Rückgabe: { state: string, note: string }
+ * Rückgabe: { state: string, note: string, signal_source: { loom: string[], spin: string[] } }
  */
+
+import {
+  diagnoseChunks as _loomDiagnoseChunks,
+  getChunkText as _loomGetChunkText,
+  STATES,
+} from '@loot/loom';
 
 import {
   META_MARKERS,
@@ -19,28 +20,18 @@ import {
   NORM_NEGATORS,
 } from './config.js';
 
-import { SUBORDINATING_DE } from '@loot/shared';
+import { detectClauses } from '@loot/loom';
 
 /**
  * Gibt den Text eines Chunks als String zurück.
+ * Delegiert an @loot/loom.
+ *
  * @param {object} chunk - Chunk-Objekt mit tokenIds
  * @param {object[]} tokens - Token-Array
  * @returns {string}
  */
 export function getChunkText(chunk, tokens) {
-  return chunk.tokenIds
-    .map(tId => tokens.find(t => t.id === tId).text)
-    .join(' ');
-}
-
-/**
- * Gibt den Text eines Chunks in Kleinbuchstaben zurück.
- * @param {object} chunk
- * @param {object[]} tokens
- * @returns {string}
- */
-function chunkTextLower(chunk, tokens) {
-  return getChunkText(chunk, tokens).toLowerCase();
+  return _loomGetChunkText(chunk, tokens);
 }
 
 /**
@@ -99,11 +90,22 @@ function isFormallyStableSemanticallyEmpty(orderedChunks, tokens) {
 function isMulticore(orderedChunks, tokens) {
   const predicates = orderedChunks.filter(c => c.type === 'core.predicate');
   if (predicates.length <= 1) return false;
-  const subordinated = predicates.some(p => {
-    const text = chunkTextLower(p, tokens);
-    return [...SUBORDINATING_DE].some(k => text.includes(k));
-  });
+  const sentenceText = tokens.map(t => t.text).join(' ');
+  const clauseAnalysis = detectClauses(sentenceText, 'de');
+  const firstSentence = clauseAnalysis.sentences?.[0];
+  const subordinated = Boolean(firstSentence && firstSentence.subordinateClauses.length > 0);
   return !subordinated;
+}
+
+function withSources(state, note, loomSignals = [], spinSignals = []) {
+  return {
+    state,
+    note,
+    signal_source: {
+      loom: loomSignals,
+      spin: spinSignals,
+    },
+  };
 }
 
 /**
@@ -112,46 +114,58 @@ function isMulticore(orderedChunks, tokens) {
  *
  * @param {object[]} orderedChunks - Chunks in aktueller Reihenfolge
  * @param {object[]} tokens - Token-Array
- * @returns {{ state: string, note: string }}
+ * @returns {{ state: string, note: string, signals?: object }}
  */
 export function runDiagnosis(orderedChunks, tokens) {
   if (isPerformativeInstable(orderedChunks, tokens)) {
-    return {
-      state: 'performativ_instabil',
-      note: 'Der Satz referenziert auf seine eigene Unmöglichkeit. Selbstreferenz und Auflösung gleichzeitig.',
-    };
+    return withSources(
+      'performativ_instabil',
+      'Der Satz referenziert auf seine eigene Unmöglichkeit. Selbstreferenz und Auflösung gleichzeitig.',
+      [],
+      ['meta_markers', 'null_markers']
+    );
   }
 
   if (isNormativeSelfAnnulling(orderedChunks, tokens)) {
-    return {
-      state: 'normativ_selbstannullierend',
-      note: 'Eine normative Aussage wird im gleichen Satz durch sich selbst außer Kraft gesetzt.',
-    };
+    return withSources(
+      'normativ_selbstannullierend',
+      'Eine normative Aussage wird im gleichen Satz durch sich selbst außer Kraft gesetzt.',
+      [],
+      ['normative_chunk', 'norm_negators']
+    );
   }
 
   if (isConflictual(orderedChunks, tokens)) {
-    return {
-      state: 'konfliktaer',
-      note: 'Zwei Bewertungen mit entgegengesetzter Polarität stehen unaufgelöst nebeneinander.',
-    };
+    return withSources(
+      'konfliktaer',
+      'Zwei Bewertungen mit entgegengesetzter Polarität stehen unaufgelöst nebeneinander.',
+      [],
+      ['chunk_polarity']
+    );
   }
 
   if (isFormallyStableSemanticallyEmpty(orderedChunks, tokens)) {
-    return {
-      state: 'formal_stabil_semantisch_leer',
-      note: 'Der Satz ist grammatisch korrekt, aber das Subjekt ist ein Platzhalter ohne externe Referenz.',
-    };
+    return withSources(
+      'formal_stabil_semantisch_leer',
+      'Der Satz ist grammatisch korrekt, aber das Subjekt ist ein Platzhalter ohne externe Referenz.',
+      [],
+      ['subject_placeholder', 'local_chunk_context']
+    );
   }
 
   if (isMulticore(orderedChunks, tokens)) {
-    return {
-      state: 'mehrkernig',
-      note: 'Mehrere gleichrangige Prädikatskerne ohne Subordination identifiziert.',
-    };
+    return withSources(
+      'mehrkernig',
+      'Mehrere gleichrangige Prädikatskerne ohne Subordination identifiziert.',
+      ['clause_subordination'],
+      ['predicate_count']
+    );
   }
 
-  return {
-    state: 'stabil',
-    note: 'Keine strukturellen Spannungen erkannt.',
-  };
+  return withSources(
+    'stabil',
+    'Keine strukturellen Spannungen erkannt.',
+    ['clause_subordination'],
+    ['chunk_consistency']
+  );
 }
