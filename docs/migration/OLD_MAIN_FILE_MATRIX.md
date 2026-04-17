@@ -12,8 +12,8 @@
 | old_main/pipeline.js | js code | thin wrapper around normalizer | `packages/flow/src/pipeline.js` | already_migrated | high | **deleted** | richer current pipeline is canonical |
 | old_main/KLICK_MICH.bat | windows helper | wrapper for AHK launcher | none | legacy_script_safe_to_drop | high | **deleted** | tied to legacy desktop wrapper flow |
 | old_main/TEST_PIPELINE.bat | windows helper | portable-node pipeline smoke runner | none | legacy_script_safe_to_drop | high | **deleted** | obsolete helper |
-| old_main/concepts/Logiktest.md | doc | debug sample text | `database/debug/Logiktest.md` | already_migrated | high | **deleted** | verified byte-identical duplicate |
-| old_main/concepts/Testsatz_1_de.md | doc | debug sample text | `database/debug/Testsatz_1_de.md` | already_migrated | high | **deleted** | verified byte-identical duplicate |
+| old_main/concepts/Logiktest.md | doc | debug sample text | `data/benchmark/examples/manual_debug/Logiktest.md` | already_migrated | high | **deleted** | verified byte-identical duplicate |
+| old_main/concepts/Testsatz_1_de.md | doc | debug sample text | `data/benchmark/examples/manual_debug/Testsatz_1_de.md` | already_migrated | high | **deleted** | verified byte-identical duplicate |
 | old_main/concepts/Regeldatenbank für orthografische Normalisierung und Zielhypothesenbildung.md | doc | long-form rules rationale | `database/rules/Erweitertes_Regelwerk.md` | partially_migrated | high | **archived** | moved to `docs/archive/old_main_concepts/` |
 | old_main/concepts/Links_Quellen_Flow_NEU.md | doc | source/reference links | `database/rules/Links_Quellen_NEU_DE.md` | partially_migrated | high | **archived** | URL set verified equivalent after normalization |
 | old_main/concepts/Das Stammprinzip bei der Korrektur von Auslautverhärtungen.md | doc | morphology rationale | `database/rules/Aktuellstes_Regelwerk.md` (thematic overlap) | unique_must_review | medium | **archived** | moved to `docs/archive/old_main_concepts/` |

@@ -1,5 +1,8 @@
 # SQLite Fehlerkorpus / Benchmark — v2
 
+> Canonical DB home in this monorepo: `flow-db/`.
+> Supporting data/docs may exist in `database/`, `data/benchmark/`, and `corpora/`, but runtime DB truth (schema/migrations/importers) lives here.
+
 A pragmatic SQLite-first corpus toolkit supporting three concurrent use cases:
 
 - **Normalization Core DB** — via `v_normalization_candidates`

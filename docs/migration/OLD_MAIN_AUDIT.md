@@ -19,8 +19,8 @@
 - **Mixed area:** concept material has been moved to `docs/archive/**`; some archived artifacts still require manual keep/discard review.
 
 ## Verified transfer findings (hard evidence)
-1. `old_main/concepts/Logiktest.md` was byte-identical to `database/debug/Logiktest.md` and has been removed from `old_main`.
-2. `old_main/concepts/Testsatz_1_de.md` was byte-identical to `database/debug/Testsatz_1_de.md` and has been removed from `old_main`.
+1. `old_main/concepts/Logiktest.md` was byte-identical to `data/benchmark/examples/manual_debug/Logiktest.md` and has been removed from `old_main`.
+2. `old_main/concepts/Testsatz_1_de.md` was byte-identical to `data/benchmark/examples/manual_debug/Testsatz_1_de.md` and has been removed from `old_main`.
 3. `old_main/concepts/Regeldatenbank für orthografische Normalisierung und Zielhypothesenbildung.md` content appears transferred (semantically and text-heavy) to `database/rules/Erweitertes_Regelwerk.md`; old copy is archived.
 4. Rule examples from `old_main/normalizer.js` are represented in current FLOW rule/test files (`packages/flow/src/rules.sn.js`, `packages/flow/test/test_normalization.js`, etc.).
 

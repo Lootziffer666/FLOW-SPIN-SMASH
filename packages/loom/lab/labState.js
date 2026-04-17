@@ -1,5 +1,5 @@
 const crypto = require('node:crypto');
-const { runCorrection } = require('../src/pipeline');
+const { runCorrection } = require('../../flow/src/pipeline');
 
 function countWhitespaceTokens(text) {
   const value = String(text).trim();

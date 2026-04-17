@@ -15,6 +15,6 @@ Purpose: preserve historically relevant, non-canonical concept material outside 
 
 ## Dedupe/deletion actions already applied
 
-- `old_main/concepts/Logiktest.md` removed (byte-identical duplicate of `database/debug/Logiktest.md`).
-- `old_main/concepts/Testsatz_1_de.md` removed (byte-identical duplicate of `database/debug/Testsatz_1_de.md`).
+- `old_main/concepts/Logiktest.md` removed (byte-identical duplicate of `data/benchmark/examples/manual_debug/Logiktest.md`).
+- `old_main/concepts/Testsatz_1_de.md` removed (byte-identical duplicate of `data/benchmark/examples/manual_debug/Testsatz_1_de.md`).
 

@@ -3,7 +3,7 @@
 ## 0) Ist-Stand (kurz, verifiziert)
 
 - Es gibt **kein** `packages/loom`-Package; die geteilte Engine liegt aktuell in `packages/shared`.  
-- Architektur ist im Code noch `@loot/shared`, während die Produktdoku bereits auf **LOOM** umgestellt wurde (`docs/Monorepo.md`, `docs/Portfolio.md`, `docs/FLOW_VERGLEICH.md`).  
+- Architektur ist im Code noch `@loot/shared`, während die Produktdoku bereits auf **LOOM** umgestellt wurde (`docs/architecture/Monorepo.md`, `docs/product/Portfolio.md`, `docs/product/FLOW_VERGLEICH.md`).  
 - FLOW/SPIN importieren Engine-Bausteine aus `@loot/shared` (u. a. `clauseDetector`, `confidenceFilter`, `contextWindowRules`, `rules.gr`).  
 - `npm run test:shared` läuft; `npm run test:flow` schlägt aktuell in dieser Umgebung mit `Cannot find module '@loot/shared'` fehl (Workspace-Linking/Install-Problem).
 
