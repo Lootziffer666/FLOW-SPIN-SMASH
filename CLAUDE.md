@@ -22,3 +22,7 @@
 ## When uncertain
 - Ask: is this hypothetical, verified, or blocked?
 - Prefer explicit constraints over plausible guessing.
+
+## Working mode additions
+- Treat README maintenance as part of the implementation, not as optional cleanup.
+- When a known bug affects verification or scope, surface it explicitly instead of burying it in a summary.
