@@ -12,11 +12,4 @@ module.exports = {
   ...chunker,
   ...structural,
   ...signals,
-
-  // explizit festnageln, damit nichts versehentlich überschrieben wird
-  chunkSentence: chunker.chunkSentence,
-  chunkText: chunker.chunkText,
-  tokenizeText: chunker.tokenizeText,
-  tagTokens: chunker.tagTokens,
-  TAG: chunker.TAG,
 };
